@@ -1,6 +1,23 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
+import { Box, createTheme, ThemeProvider } from '@mui/material';
+import { Header } from './components/Header';
+import { Layout } from './components/Layout';
 
-export default function ButtonUsage() {
-  return <Button variant="contained">Hello world</Button>;
+const theme = createTheme({})
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Box
+        component="main"
+        sx={{
+          height: '100vh',
+
+        }}
+      >
+        <Header />
+        <Layout>
+          <h1>Ola</h1>
+        </Layout>
+      </Box>
+    </ThemeProvider>
+  )
 }
