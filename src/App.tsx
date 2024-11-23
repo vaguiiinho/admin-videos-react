@@ -3,28 +3,9 @@ import { Header } from './components/Header';
 import { Layout } from './components/Layout';
 import { appTheme } from './config/theme';
 import { Route, Routes } from 'react-router-dom';
-
-
-export const Home = () => {
-  return (
-    <Box>
-      <Typography variant="h1" component="h1">
-        Home Page
-      </Typography>
-    </Box>
-  )
-}
-
-export const About = () => {
-  return (
-    <Box>
-      <Typography variant="h1" component="h1">
-        About Page
-      </Typography>
-    </Box>
-  )
-}
-
+import { CategoryList } from './features/categories/CategoryList';
+import { CategoryUpdate } from './features/categories/CategoryUpdate';
+import { CategoryCreate } from './features/categories/CategoryCreate';
 
 export default function App() {
   return (
@@ -39,8 +20,21 @@ export default function App() {
         <Header />
         <Layout>
           <Routes>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
+            <Route index element={<CategoryList />} />
+            <Route path="categories" element={<CategoryList />} />
+            <Route path="categories/create" element={<CategoryCreate />} />
+            <Route path="categories/update/:id" element={<CategoryUpdate />} />
+
+            <Route path="*" element={
+              <Box sx={{ color: "white" }}>
+                <Typography variant="h1">
+                  404
+                </Typography>
+                <Typography variant="h2">
+                  Page Not Found
+                </Typography>
+              </Box>
+            } />
           </Routes>
 
         </Layout>
