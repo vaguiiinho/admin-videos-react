@@ -1,8 +1,9 @@
-import { Box, Button } from "@mui/material";
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { Box, Button, Typography, IconButton } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectorCategories } from "./categorySlice";
+import { DeleteSharp } from "@mui/icons-material";
 
 
 export function CategoryList() {
@@ -11,14 +12,56 @@ export function CategoryList() {
     const rows: GridRowsProp = categories.map((category) => ({
         id: category.id,
         name: category.name,
-        description: category.description
+        description: category.description,
+        createdAt: new Date(category.createdAt).toLocaleDateString('pt-BR'),
+        isActive: category.isActive,
     }))
 
     const columns: GridColDef[] = [
-        { field: 'id', headerName: 'Id', width: 150 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field: 'description', headerName: 'Description', width: 200 },
+        {
+            field: 'name',
+            headerName: 'Name',
+            flex: 1,
+        },
+        {
+            field: 'isActive',
+            headerName: 'Is Active',
+            flex: 1,
+            type: "boolean",
+            renderCell: renderCellIsActive
+        },
+        {
+            field: 'createdAt',
+            headerName: 'Created At',
+            flex: 1,
+        },
+        {
+            field: 'id',
+            headerName: 'Actions',
+            flex: 1,
+            renderCell: renderActionsCell
+        },
     ];
+
+    function renderCellIsActive(row: GridRenderCellParams) {
+        return (
+            <Typography color={row.value ? "primary" : "secondary"}>
+                {row.value ? "Active" : "Inactive"}
+            </Typography>
+        )
+    }
+
+    function renderActionsCell(row: GridRenderCellParams) {
+        return (
+            <IconButton
+                aria-label="Delete"
+                color="secondary"
+                onClick={() => console.log('clicked')}
+            >
+                <DeleteSharp />
+            </IconButton>
+        )
+    }
 
     return (
         <Box maxWidth="lg" sx={{ my: 4 }}>

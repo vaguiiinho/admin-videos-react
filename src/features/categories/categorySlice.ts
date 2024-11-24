@@ -24,7 +24,7 @@ const category: Category = {
 
 const categories = [
     category,
-    { ...category, id: "1ce68ddd-4981-4ee2-a23b-a01bbc8c8bb", name: "Peach" },
+    { ...category, id: "1ce68ddd-4981-4ee2-a23b-a01bbc8c8bb", name: "Peach", isActive: false },
     { ...category, id: "4ce68ddd-4981-4ee2-a23b-a01bbc8c8bc", name: "Orange" },
     { ...category, id: "5ce68ddd-4981-4ee2-a23b-a01bbc8c8bc", name: "Grape" },
 ]
