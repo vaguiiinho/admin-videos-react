@@ -1,5 +1,11 @@
-import { Box, Button, Typography, IconButton } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
+import { Box, Button, Typography, IconButton, Toolbar } from "@mui/material";
+import {
+    DataGrid,
+    GridColDef,
+    GridRenderCellParams,
+    GridRowsProp,
+    GridToolbar
+} from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectorCategories } from "./categorySlice";
@@ -77,7 +83,22 @@ export function CategoryList() {
                 </Button>
             </Box>
             <div style={{ height: '100%', width: '100%' }}>
-                <DataGrid pagination pageSizeOptions={[2, 5, 10, 50]} rows={rows} columns={columns} />
+                <DataGrid
+                    pagination
+                    pageSizeOptions={[2, 5, 10, 50]}
+                    disableColumnSelector={true}
+                    disableColumnFilter={true}
+                    disableDensitySelector={true}
+                    disableRowSelectionOnClick={true}
+                    rows={rows}
+                    columns={columns}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                        toolbar: {
+                            showQuickFilter: true,
+                        },
+                    }}
+                />
             </div>
         </Box>
     )
