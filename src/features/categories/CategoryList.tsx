@@ -1,4 +1,4 @@
-import { Box, Button, Typography, IconButton, Toolbar } from "@mui/material";
+import { Box, Button, Typography, IconButton } from "@mui/material";
 import {
     DataGrid,
     GridColDef,
@@ -15,6 +15,13 @@ import { DeleteSharp } from "@mui/icons-material";
 export function CategoryList() {
     const categories = useAppSelector(selectorCategories);
 
+    const slotProps = {
+        toolbar: {
+            showQuickFilter: true,
+        },
+    };
+
+
     const rows: GridRowsProp = categories.map((category) => ({
         id: category.id,
         name: category.name,
@@ -28,6 +35,7 @@ export function CategoryList() {
             field: 'name',
             headerName: 'Name',
             flex: 1,
+            renderCell: renderNameCell
         },
         {
             field: 'isActive',
@@ -69,6 +77,29 @@ export function CategoryList() {
         )
     }
 
+
+    // Exemplo :
+    // function renderNameCell(row: GridRenderCellParams) {
+    //     return (
+    //         <Typography
+    //             sx={{ textDecoration: 'none', color: 'inherit' }}
+    //             component={Link}
+    //             to={`/categories/update/${row.id}`}>
+    //             {row.value}
+    //         </Typography>
+    //     )
+    // }
+
+    function renderNameCell(row: GridRenderCellParams) {
+        return (
+            <Link
+                style={{ textDecoration: 'none' }}
+                to={`/categories/update/${row.id}`}>
+                <Typography color="primary">{row.value}</Typography>
+            </Link>
+        )
+    }
+
     return (
         <Box maxWidth="lg" sx={{ my: 4 }}>
             <Box display="flex" justifyContent="end">
@@ -82,7 +113,7 @@ export function CategoryList() {
                     New Category
                 </Button>
             </Box>
-            <div style={{ height: '100%', width: '100%' }}>
+            <Box sx={{ display: "flex", height: "600" }}>
                 <DataGrid
                     pagination
                     pageSizeOptions={[2, 5, 10, 50]}
@@ -93,13 +124,9 @@ export function CategoryList() {
                     rows={rows}
                     columns={columns}
                     slots={{ toolbar: GridToolbar }}
-                    slotProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                        },
-                    }}
+                    slotProps={slotProps}
                 />
-            </div>
+            </Box>
         </Box>
     )
 }
