@@ -1,4 +1,5 @@
-import { Box, Button, Typography, IconButton } from "@mui/material";
+import { DeleteSharp } from "@mui/icons-material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import {
     DataGrid,
     GridColDef,
@@ -9,7 +10,6 @@ import {
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectorCategories } from "./categorySlice";
-import { DeleteSharp } from "@mui/icons-material";
 
 
 export function CategoryList() {
