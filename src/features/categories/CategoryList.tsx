@@ -7,6 +7,7 @@ import {
     GridRowsProp,
     GridToolbar
 } from '@mui/x-data-grid';
+import { useSnackbar } from "notistack";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { deleteCategory, selectorCategories } from "./categorySlice";
@@ -22,6 +23,7 @@ export function CategoryList() {
         },
     };
 
+    const { enqueueSnackbar } = useSnackbar()
 
     const rows: GridRowsProp = categories.map((category) => ({
         id: category.id,
@@ -61,6 +63,7 @@ export function CategoryList() {
 
     function handleDeleteCategory(id: string) {
         dispatch(deleteCategory(id))
+        enqueueSnackbar('Success deleted category!', { variant: "error" })
     }
     function renderCellIsActive(row: GridRenderCellParams) {
         return (
