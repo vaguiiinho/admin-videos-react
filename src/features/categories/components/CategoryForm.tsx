@@ -30,7 +30,7 @@ export function CategoryForm({
 }: Props) {
     return (
         <Box p={2}>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                     <Grid size={12}>
                         <FormControl fullWidth>
@@ -61,10 +61,10 @@ export function CategoryForm({
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        name="is_active"
+                                        name="isActive"
                                         color="secondary"
                                         onChange={handleToggle}
-                                        checked={category.isActive}
+                                        checked={category.isActive || false}
                                         inputProps={{ "aria-label": "controlled" }}
                                     />
                                 }
@@ -78,6 +78,7 @@ export function CategoryForm({
                                 Back
                             </Button>
                             <Button
+                                type="submit"
                                 variant="contained"
                                 color="secondary"
                                 disabled={isDisabled}

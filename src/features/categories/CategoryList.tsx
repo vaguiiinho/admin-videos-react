@@ -8,12 +8,13 @@ import {
     GridToolbar
 } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
-import { selectorCategories } from "./categorySlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { deleteCategory, selectorCategories } from "./categorySlice";
 
 
 export function CategoryList() {
     const categories = useAppSelector(selectorCategories);
+    const dispatch = useAppDispatch()
 
     const slotProps = {
         toolbar: {
@@ -52,11 +53,15 @@ export function CategoryList() {
         {
             field: 'id',
             headerName: 'Actions',
+            type: "string",
             flex: 1,
             renderCell: renderActionsCell
         },
     ];
 
+    function handleDeleteCategory(id: string) {
+        dispatch(deleteCategory(id))
+    }
     function renderCellIsActive(row: GridRenderCellParams) {
         return (
             <Typography color={row.value ? "primary" : "secondary"}>
@@ -70,7 +75,7 @@ export function CategoryList() {
             <IconButton
                 aria-label="Delete"
                 color="secondary"
-                onClick={() => console.log('clicked')}
+                onClick={() => handleDeleteCategory(row.value)}
             >
                 <DeleteSharp />
             </IconButton>
@@ -116,7 +121,7 @@ export function CategoryList() {
             <Box sx={{ display: "flex", height: "600" }}>
                 <DataGrid
                     pagination
-                    pageSizeOptions={[2, 5, 10, 50]}
+                    pageSizeOptions={[2, 5, 10, 50, 100]}
                     disableColumnSelector={true}
                     disableColumnFilter={true}
                     disableDensitySelector={true}
