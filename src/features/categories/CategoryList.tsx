@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlice";
 
-
 export function CategoryList() {
     const { data, isFetching, error } = useGetCategoriesQuery();
     const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
