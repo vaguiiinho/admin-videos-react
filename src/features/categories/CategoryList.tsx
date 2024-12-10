@@ -8,14 +8,14 @@ import {
     GridToolbar
 } from '@mui/x-data-grid';
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { deleteCategory, selectorCategories } from "./categorySlice";
+import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlice";
 
 
 export function CategoryList() {
-    const categories = useAppSelector(selectorCategories);
-    const dispatch = useAppDispatch()
+    const { data, isFetching, error } = useGetCategoriesQuery();
+    const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
 
     const slotProps = {
         toolbar: {
@@ -25,13 +25,13 @@ export function CategoryList() {
 
     const { enqueueSnackbar } = useSnackbar()
 
-    const rows: GridRowsProp = categories.map((category) => ({
+    const rows: GridRowsProp = data ? data.data.map((category) => ({
         id: category.id,
         name: category.name,
         description: category.description,
-        createdAt: new Date(category.createdAt).toLocaleDateString('pt-BR'),
-        isActive: category.isActive,
-    }))
+        createdAt: new Date(category.created_at).toLocaleDateString('pt-BR'),
+        isActive: category.is_active,
+    })) : []
 
     const columns: GridColDef[] = [
         {
@@ -61,10 +61,19 @@ export function CategoryList() {
         },
     ];
 
-    function handleDeleteCategory(id: string) {
-        dispatch(deleteCategory(id))
-        enqueueSnackbar('Success deleted category!', { variant: "error" })
+    async function handleDeleteCategory(id: string) {
+        await deleteCategory({ id });
     }
+
+    useEffect(() => {
+        if (deleteCategoryStatus.isSuccess) {
+            enqueueSnackbar("Category deleted", { variant: "success" });
+        }
+        if (deleteCategoryStatus.error) {
+            enqueueSnackbar("Category not deleted", { variant: "error" });
+        }
+    }, [deleteCategoryStatus, enqueueSnackbar])
+
     function renderCellIsActive(row: GridRenderCellParams) {
         return (
             <Typography color={row.value ? "primary" : "secondary"}>
@@ -121,7 +130,7 @@ export function CategoryList() {
                     New Category
                 </Button>
             </Box>
-            <Box sx={{ display: "flex", height: "600" }}>
+            <Box sx={{ display: "flex", height: 600 }}>
                 <DataGrid
                     pagination
                     pageSizeOptions={[2, 5, 10, 50, 100]}

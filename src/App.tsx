@@ -22,7 +22,7 @@ export default function App() {
         <Box
           component="main"
           sx={{
-            height: '100vh',
+            height: '135vh',
             backgroundColor: (theme) => theme.palette.grey[900]
           }}
         >
