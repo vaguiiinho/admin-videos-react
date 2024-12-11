@@ -6,10 +6,11 @@ import {
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
-import { Category, createCategory } from "./categorySlice";
+import { Category, createCategory, useCreateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 
 export function CategoryCreate() {
+    const [createCategory, status] = useCreateCategoryMutation()
     const [isDisabled, setIsDisabled] = useState(false)
     const [categoryState, setCategoryState] = useState<Category>({
         id: "",

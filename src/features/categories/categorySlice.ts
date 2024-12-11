@@ -16,29 +16,29 @@ export interface Category {
 
 function parseQueryParams(params: CategoryParams) {
     const query = new URLSearchParams();
-  
+
     if (params.page) {
-      query.append("page", params.page.toString());
+        query.append("page", params.page.toString());
     }
-  
+
     if (params.totalPage) {
-      query.append("totalPage", params.totalPage.toString());
+        query.append("totalPage", params.totalPage.toString());
     }
-  
+
     if (params.filter) {
-      query.append("filter", params.filter);
+        query.append("filter", params.filter);
     }
-  
+
     if (params.isActive) {
-      query.append("is_active", params.isActive.toString());
+        query.append("is_active", params.isActive.toString());
     }
-  
+
     return query.toString();
-  }
+}
 
 function getCategories({ page = 1, totalPage = 15, filter = "" }) {
-  const params = { page, totalPage, filter, isActive: true };
-  return `${endpointUrl}?${parseQueryParams(params)}`;
+    const params = { page, totalPage, filter, isActive: true };
+    return `${endpointUrl}?${parseQueryParams(params)}`;
 }
 
 const endpointUrl = "/categories"
@@ -50,11 +50,23 @@ function deleteCategoryMutation(category: Category) {
     }
 }
 
+function createCategoryMutation(category: Category) {
+    return {
+        url: endpointUrl,
+        method: 'POST',
+        body: category,
+    }
+}
+
 export const categoriesApiSlice = apiSlice.injectEndpoints({
     endpoints: ({ query, mutation }) => ({
         getCategories: query<Results, CategoryParams>({
             query: getCategories,
             providesTags: ["Categories"]
+        }),
+        createCategory: mutation<Results, Category>({
+            query: createCategoryMutation,
+            invalidatesTags: ["Categories"]
         }),
         deleteCategory: mutation<Results, { id: string }>({
             query: deleteCategoryMutation,
@@ -127,4 +139,8 @@ export default categoriesSlice.reducer
 
 export const { createCategory, listCategory, updateCategory, deleteCategory } = categoriesSlice.actions
 
-export const { useGetCategoriesQuery, useDeleteCategoryMutation } = categoriesApiSlice
+export const {
+    useGetCategoriesQuery,
+    useDeleteCategoryMutation,
+    useCreateCategoryMutation
+} = categoriesApiSlice

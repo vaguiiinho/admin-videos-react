@@ -25,12 +25,12 @@ type Props = {
 
 export function CategoryTable({
     data,
-    paginationModel,
     isFetching,
-    pageSizeOptions,
     handleDelete,
-    onPaginationModelChange,
+    paginationModel,
+    pageSizeOptions,
     handleFilterChange,
+    onPaginationModelChange,
 }: Props) {
     const slotProps = {
         toolbar: {
@@ -136,14 +136,14 @@ export function CategoryTable({
                 paginationMode="server"
                 checkboxSelection={false}
                 disableColumnFilter={true}
-                pageSizeOptions={pageSizeOptions}
                 disableColumnSelector={true}
                 disableDensitySelector={true}
                 slots={{ toolbar: GridToolbar }}
+                pageSizeOptions={pageSizeOptions}
                 disableRowSelectionOnClick={true}
+                paginationModel={paginationModel}
                 onFilterModelChange={handleFilterChange}
                 onPaginationModelChange={onPaginationModelChange}
-                paginationModel={paginationModel}
             />
         </Box>
     )

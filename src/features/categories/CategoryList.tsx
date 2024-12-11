@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
@@ -47,6 +47,10 @@ export function CategoryList() {
         }
     }, [deleteCategoryStatus, enqueueSnackbar]);
 
+    if (error) {
+        return <Typography>Error fetching categories</Typography>
+    }
+
     return (
         <Box maxWidth="lg" sx={{ my: 4 }}>
             <Box display="flex" justifyContent="end">
@@ -66,8 +70,8 @@ export function CategoryList() {
                 pageSizeOptions={rowsPerPage}
                 paginationModel={paginationModel}
                 handleDelete={handleDeleteCategory}
-                onPaginationModelChange={onPaginationModelChange}
                 handleFilterChange={handleFilterChange}
+                onPaginationModelChange={onPaginationModelChange}
             />
         </Box>
     )
