@@ -21,12 +21,12 @@ function parseQueryParams(params: CategoryParams) {
       query.append("page", params.page.toString());
     }
   
-    if (params.per_page) {
-      query.append("per_page", params.per_page.toString());
+    if (params.totalPage) {
+      query.append("totalPage", params.totalPage.toString());
     }
   
-    if (params.search) {
-      query.append("search", params.search);
+    if (params.filter) {
+      query.append("filter", params.filter);
     }
   
     if (params.isActive) {
@@ -36,8 +36,8 @@ function parseQueryParams(params: CategoryParams) {
     return query.toString();
   }
 
-function getCategories({ page = 1, per_page = 10, search = "" }) {
-  const params = { page, per_page, search, isActive: true };
+function getCategories({ page = 1, totalPage = 15, filter = "" }) {
+  const params = { page, totalPage, filter, isActive: true };
   return `${endpointUrl}?${parseQueryParams(params)}`;
 }
 

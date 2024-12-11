@@ -7,10 +7,14 @@ import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlic
 import { CategoryTable } from "./components/CategoryTable";
 
 export function CategoryList() {
-    const [paginationModel, setpaginationModel] = useState({page: 1, pageSize:15})
-    const options = {search: ''}
-    const [rowsPerPage] = useState([5, 10, 15, 20])
+    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
     const [search, setSearch] = useState("")
+    const options = {
+        page: paginationModel.page + 1, // Página começa em 1 na API
+        totalPage: paginationModel.pageSize,
+        filter: search,
+    };
+    const [rowsPerPage] = useState([5, 10, 15, 20, 50])
 
     const { data, isFetching, error } = useGetCategoriesQuery(options);
     const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
@@ -18,11 +22,16 @@ export function CategoryList() {
     const { enqueueSnackbar } = useSnackbar()
 
     function onPaginationModelChange(model: GridPaginationModel) {
-        console.log(model)
+        setPaginationModel(model)
     }
 
     function handleFilterChange(filterModel: GridFilterModel) {
-        console.log(filterModel)
+        if (filterModel.quickFilterValues?.length === 1) {
+            const quickFilterValue = filterModel.quickFilterValues.join(" ")
+            return setSearch(quickFilterValue)
+        }
+
+        return setSearch("")
     }
 
     async function handleDeleteCategory(id: string) {
@@ -54,7 +63,7 @@ export function CategoryList() {
             <CategoryTable
                 data={data}
                 isFetching={isFetching}
-                pageSizeOptions={[5, 10, 15, 20]}
+                pageSizeOptions={rowsPerPage}
                 paginationModel={paginationModel}
                 handleDelete={handleDeleteCategory}
                 onPaginationModelChange={onPaginationModelChange}

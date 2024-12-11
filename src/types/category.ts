@@ -37,7 +37,7 @@ export interface Meta {
 
 export interface CategoryParams {
     page?: number;
-    per_page?: number;
-    search?: string;
+    totalPage?: number;
+    filter?: string;
     isActive?: boolean;
 }
