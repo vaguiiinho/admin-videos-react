@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import { GridPaginationModel } from "@mui/x-data-grid";
+import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -7,40 +7,27 @@ import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlic
 import { CategoryTable } from "./components/CategoryTable";
 
 export function CategoryList() {
-    const { data, isFetching, error } = useGetCategoriesQuery();
-    const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
-
-    const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-        page: data?.meta.current_page ?? 0, // Padrão: página 0
-        pageSize: data?.meta.per_page ?? 10, // Padrão: 10 itens por página
-    });
-
+    const [paginationModel, setpaginationModel] = useState({page: 1, pageSize:15})
+    const options = {search: ''}
     const [rowsPerPage] = useState([5, 10, 15, 20])
-
     const [search, setSearch] = useState("")
 
-    // const [queryOptions, setQueryOptions] = useState({});
-
-    // const onFilterChange = useCallback((filterModel: GridFilterModel) => {
-    //     // Here you save the data you need from the filter model
-    //     setQueryOptions({ filterModel: { ...filterModel } });
-    // }, []);
+    const { data, isFetching, error } = useGetCategoriesQuery(options);
+    const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
 
     const { enqueueSnackbar } = useSnackbar()
+
+    function onPaginationModelChange(model: GridPaginationModel) {
+        console.log(model)
+    }
+
+    function handleFilterChange(filterModel: GridFilterModel) {
+        console.log(filterModel)
+    }
 
     async function handleDeleteCategory(id: string) {
         await deleteCategory({ id });
     }
-
-    useEffect(() => {
-        if (data?.meta) {
-            setPaginationModel({
-                page: data.meta.current_page - 1, // Ajustando para índice baseado em zero
-                pageSize: data.meta.per_page,
-            });
-        }
-
-    }, [data]);
 
     useEffect(() => {
         if (deleteCategoryStatus.isSuccess) {
@@ -67,11 +54,11 @@ export function CategoryList() {
             <CategoryTable
                 data={data}
                 isFetching={isFetching}
-                pageSizeOptions={rowsPerPage}
-                perPage={paginationModel}
+                pageSizeOptions={[5, 10, 15, 20]}
+                paginationModel={paginationModel}
                 handleDelete={handleDeleteCategory}
-                handleOnPageChange={setPaginationModel}
-                handleFilterChange={() => { }}
+                onPaginationModelChange={onPaginationModelChange}
+                handleFilterChange={handleFilterChange}
             />
         </Box>
     )
