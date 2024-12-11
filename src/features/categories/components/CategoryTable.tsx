@@ -1,6 +1,14 @@
 import { DeleteSharp } from "@mui/icons-material"
-import { DataGrid, GridColDef, GridFilterModel, GridRenderCellParams, GridRowsProp } from "@mui/x-data-grid"
 import { Box, IconButton, Typography } from "@mui/material"
+import {
+    DataGrid,
+    GridColDef,
+    GridFilterModel,
+    GridPaginationModel,
+    GridRenderCellParams,
+    GridRowsProp,
+    GridToolbar,
+} from "@mui/x-data-grid"
 import { Link } from "react-router-dom"
 import { Results } from "../../../types/category"
 
@@ -11,7 +19,7 @@ type Props = {
     data: Results | undefined
 
     handleDelete: (id: number) => void
-    handleOnPageChange: (page: number) => void
+    handleOnPageChange: (model: GridPaginationModel) => void
     handleOnPageSizeChange: (pageSize: number) => void
     handleFilterChange: (filterModel: GridFilterModel) => void
 }
@@ -116,9 +124,28 @@ export function CategoryTable({
         )
     }
 
+    const rowCount = data?.meta.total || 0
+
     return (
         <Box sx={{ display: "flex", height: 600 }}>
-            <DataGrid rows={rows} columns={columns} />
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                rowCount={rowCount}
+                filterMode="server"
+                loading={isFetching}
+                slotProps={slotProps}
+                paginationMode="server"
+                checkboxSelection={false}
+                disableColumnFilter={true}
+                pageSizeOptions={[perPage]}
+                disableColumnSelector={true}
+                disableDensitySelector={true}
+                slots={{ toolbar: GridToolbar }}
+                disableRowSelectionOnClick={true}
+                onFilterModelChange={handleFilterChange}
+                onPaginationModelChange={handleOnPageChange}
+            />
         </Box>
     )
 }
