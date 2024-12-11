@@ -1,17 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { CategoryParams, Results } from "../../types/category";
+import { CategoryParams, Result, Results } from "../../types/category";
 import { apiSlice } from "../api/apiSlice";
 
 export interface Category {
 
     id: string;
     name: string;
+    is_active: boolean;
+    created_at: string;
     description: string | null;
-    isActive: boolean;
-    deleted_at: null | string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 function parseQueryParams(params: CategoryParams) {
@@ -58,14 +56,34 @@ function createCategoryMutation(category: Category) {
     }
 }
 
+function updateCategoryMutation(category: Category) {
+    return {
+        url: `${endpointUrl}/${category.id}`,
+        method: 'PUT',
+        body: category,
+    }
+}
+
+function getCategory({ id }: { id: string }) {
+    return `${endpointUrl}/${id}`
+}
+
 export const categoriesApiSlice = apiSlice.injectEndpoints({
     endpoints: ({ query, mutation }) => ({
         getCategories: query<Results, CategoryParams>({
             query: getCategories,
             providesTags: ["Categories"]
         }),
+        getCategory: query<Result, { id: string }>({
+            query: getCategory,
+            providesTags: ["Categories"]
+        }),
         createCategory: mutation<Results, Category>({
             query: createCategoryMutation,
+            invalidatesTags: ["Categories"]
+        }),
+        updateCategory: mutation<Results, Category>({
+            query: updateCategoryMutation,
             invalidatesTags: ["Categories"]
         }),
         deleteCategory: mutation<Results, { id: string }>({
@@ -79,10 +97,8 @@ const category: Category = {
     id: "0ce68ddd-4981-4ee2-a23b-a01452b96b01",
     name: "Technology",
     description: "Latest technological news and trends",
-    isActive: true,
-    deleted_at: null,
-    createdAt: "2022-05-12T14:30:00Z",
-    updatedAt: "2022-05-12T14:30:00Z"
+    is_active: true,
+    created_at: "2022-05-12T14:30:00Z",
 }
 
 const categories = [
@@ -122,11 +138,11 @@ export const selectCategoryById = (state: RootState, id: string) => {
     return category || {
         id: "",
         name: "",
+        createdAt: "",
+        updatedAt: "",
         description: "",
         isActive: false,
         deleted_at: null,
-        createdAt: "",
-        updatedAt: "",
     }
 }
 
@@ -140,7 +156,9 @@ export default categoriesSlice.reducer
 export const { createCategory, listCategory, updateCategory, deleteCategory } = categoriesSlice.actions
 
 export const {
+    useGetCategoryQuery,
     useGetCategoriesQuery,
     useDeleteCategoryMutation,
-    useCreateCategoryMutation
+    useCreateCategoryMutation,
+    useUpdateCategoryMutation,
 } = categoriesApiSlice

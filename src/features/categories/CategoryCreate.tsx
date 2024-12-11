@@ -16,10 +16,8 @@ export function CategoryCreate() {
         id: "",
         name: "",
         description: "",
-        isActive: false,
-        deleted_at: null,
-        createdAt: "",
-        updatedAt: "",
+        is_active: false,
+        created_at: "",
     })
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
