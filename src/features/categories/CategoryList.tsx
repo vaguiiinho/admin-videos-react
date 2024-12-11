@@ -1,68 +1,46 @@
-import { DeleteSharp } from "@mui/icons-material";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import {
-    DataGrid,
-    GridColDef,
-    GridRenderCellParams,
-    GridRowsProp,
-    GridToolbar
-} from '@mui/x-data-grid';
+import { Box, Button } from "@mui/material";
+import { GridPaginationModel } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlice";
+import { CategoryTable } from "./components/CategoryTable";
 
 export function CategoryList() {
     const { data, isFetching, error } = useGetCategoriesQuery();
     const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
 
-    const slotProps = {
-        toolbar: {
-            showQuickFilter: true,
-        },
-    };
+    const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+        page: data?.meta.current_page ?? 0, // Padrão: página 0
+        pageSize: data?.meta.per_page ?? 10, // Padrão: 10 itens por página
+    });
+
+    const [rowsPerPage] = useState([5, 10, 15, 20])
+
+    const [search, setSearch] = useState("")
+
+    // const [queryOptions, setQueryOptions] = useState({});
+
+    // const onFilterChange = useCallback((filterModel: GridFilterModel) => {
+    //     // Here you save the data you need from the filter model
+    //     setQueryOptions({ filterModel: { ...filterModel } });
+    // }, []);
 
     const { enqueueSnackbar } = useSnackbar()
-
-    const rows: GridRowsProp = data ? data.data.map((category) => ({
-        id: category.id,
-        name: category.name,
-        description: category.description,
-        createdAt: new Date(category.created_at).toLocaleDateString('pt-BR'),
-        isActive: category.is_active,
-    })) : []
-
-    const columns: GridColDef[] = [
-        {
-            field: 'name',
-            headerName: 'Name',
-            flex: 1,
-            renderCell: renderNameCell
-        },
-        {
-            field: 'isActive',
-            headerName: 'Is Active',
-            flex: 1,
-            type: "boolean",
-            renderCell: renderCellIsActive
-        },
-        {
-            field: 'createdAt',
-            headerName: 'Created At',
-            flex: 1,
-        },
-        {
-            field: 'id',
-            headerName: 'Actions',
-            type: "string",
-            flex: 1,
-            renderCell: renderActionsCell
-        },
-    ];
 
     async function handleDeleteCategory(id: string) {
         await deleteCategory({ id });
     }
+
+    useEffect(() => {
+        if (data?.meta) {
+            setPaginationModel({
+                page: data.meta.current_page - 1, // Ajustando para índice baseado em zero
+                pageSize: data.meta.per_page,
+            });
+        }
+
+    }, [data]);
 
     useEffect(() => {
         if (deleteCategoryStatus.isSuccess) {
@@ -71,50 +49,7 @@ export function CategoryList() {
         if (deleteCategoryStatus.error) {
             enqueueSnackbar("Category not deleted", { variant: "error" });
         }
-    }, [deleteCategoryStatus, enqueueSnackbar])
-
-    function renderCellIsActive(row: GridRenderCellParams) {
-        return (
-            <Typography color={row.value ? "primary" : "secondary"}>
-                {row.value ? "Active" : "Inactive"}
-            </Typography>
-        )
-    }
-
-    function renderActionsCell(row: GridRenderCellParams) {
-        return (
-            <IconButton
-                aria-label="Delete"
-                color="secondary"
-                onClick={() => handleDeleteCategory(row.value)}
-            >
-                <DeleteSharp />
-            </IconButton>
-        )
-    }
-
-
-    // Exemplo :
-    // function renderNameCell(row: GridRenderCellParams) {
-    //     return (
-    //         <Typography
-    //             sx={{ textDecoration: 'none', color: 'inherit' }}
-    //             component={Link}
-    //             to={`/categories/update/${row.id}`}>
-    //             {row.value}
-    //         </Typography>
-    //     )
-    // }
-
-    function renderNameCell(row: GridRenderCellParams) {
-        return (
-            <Link
-                style={{ textDecoration: 'none' }}
-                to={`/categories/update/${row.id}`}>
-                <Typography color="primary">{row.value}</Typography>
-            </Link>
-        )
-    }
+    }, [deleteCategoryStatus, enqueueSnackbar]);
 
     return (
         <Box maxWidth="lg" sx={{ my: 4 }}>
@@ -129,20 +64,15 @@ export function CategoryList() {
                     New Category
                 </Button>
             </Box>
-            <Box sx={{ display: "flex", height: 600 }}>
-                <DataGrid
-                    pagination
-                    pageSizeOptions={[2, 5, 10, 50, 100]}
-                    disableColumnSelector={true}
-                    disableColumnFilter={true}
-                    disableDensitySelector={true}
-                    disableRowSelectionOnClick={true}
-                    rows={rows}
-                    columns={columns}
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={slotProps}
-                />
-            </Box>
+            <CategoryTable
+                data={data}
+                isFetching={isFetching}
+                pageSizeOptions={rowsPerPage}
+                perPage={paginationModel}
+                handleDelete={handleDeleteCategory}
+                handleOnPageChange={setPaginationModel}
+                handleFilterChange={() => { }}
+            />
         </Box>
     )
 }

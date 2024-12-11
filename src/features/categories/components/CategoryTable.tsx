@@ -13,14 +13,13 @@ import { Link } from "react-router-dom"
 import { Results } from "../../../types/category"
 
 type Props = {
-    perPage: number
+    perPage: GridPaginationModel
     isFetching: boolean
-    rowsPerPage?: number
+    pageSizeOptions: number[]
     data: Results | undefined
 
-    handleDelete: (id: number) => void
+    handleDelete: (id: string) => void
     handleOnPageChange: (model: GridPaginationModel) => void
-    handleOnPageSizeChange: (pageSize: number) => void
     handleFilterChange: (filterModel: GridFilterModel) => void
 }
 
@@ -28,11 +27,10 @@ export function CategoryTable({
     data,
     perPage,
     isFetching,
-    rowsPerPage,
+    pageSizeOptions,
     handleDelete,
     handleOnPageChange,
     handleFilterChange,
-    handleOnPageSizeChange,
 }: Props) {
     const slotProps = {
         toolbar: {
@@ -138,13 +136,14 @@ export function CategoryTable({
                 paginationMode="server"
                 checkboxSelection={false}
                 disableColumnFilter={true}
-                pageSizeOptions={[perPage]}
+                pageSizeOptions={pageSizeOptions}
                 disableColumnSelector={true}
                 disableDensitySelector={true}
                 slots={{ toolbar: GridToolbar }}
                 disableRowSelectionOnClick={true}
                 onFilterModelChange={handleFilterChange}
                 onPaginationModelChange={handleOnPageChange}
+                paginationModel={perPage}
             />
         </Box>
     )
