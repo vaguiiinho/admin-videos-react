@@ -78,15 +78,15 @@ export const categoriesApiSlice = apiSlice.injectEndpoints({
             query: getCategory,
             providesTags: ["Categories"]
         }),
-        createCategory: mutation<Results, Category>({
+        createCategory: mutation<Result, Category>({
             query: createCategoryMutation,
             invalidatesTags: ["Categories"]
         }),
-        updateCategory: mutation<Results, Category>({
+        updateCategory: mutation<Result, Category>({
             query: updateCategoryMutation,
             invalidatesTags: ["Categories"]
         }),
-        deleteCategory: mutation<Results, { id: string }>({
+        deleteCategory: mutation<Result, { id: string }>({
             query: deleteCategoryMutation,
             invalidatesTags: ["Categories"]
         }),

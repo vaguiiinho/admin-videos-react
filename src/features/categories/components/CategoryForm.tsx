@@ -68,7 +68,7 @@ export function CategoryForm({
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            name="isActive"
+                                            name="is_active"
                                             color="secondary"
                                             onChange={handleToggle}
                                             checked={category.is_active || false}
