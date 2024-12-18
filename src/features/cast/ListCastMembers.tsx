@@ -4,9 +4,10 @@ import { useDeleteCastMemberMutation, useGetCastMembersQuery } from './castMembe
 import { Box, Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { CastMemberTable } from './components/CastMemberTable';
 
 const initialOptions = {
-    page: 1,
+    page: 0,
     totalPage: 10,
     filter: "",
     rowsPerPage: [5, 10, 15, 20, 50]
@@ -25,7 +26,7 @@ export function ListCastMembers() {
     function onPaginationModelChange(model: GridPaginationModel) {
         setOptions({
             ...options,
-            page: model.page + 1,
+            page: model.page,
             totalPage: model.pageSize,
         })
     }
@@ -39,7 +40,10 @@ export function ListCastMembers() {
             })
         }
 
-        return { ...options, filter: "" }
+        return setOptions({
+            ...options,
+            filter: "",
+        })
     }
 
     useEffect(() => {
@@ -69,7 +73,15 @@ export function ListCastMembers() {
                     New Cast Member
                 </Button>
             </Box>
-
+            <CastMemberTable
+                data={data}
+                isFetching={isFetching}
+                pageSizeOptions={options.rowsPerPage}
+                paginationModel={{ page: options.page, pageSize: options.totalPage }}
+                handleDelete={handleDeleteCastMember}
+                handleFilterChange={handleFilterChange}
+                onPaginationModelChange={onPaginationModelChange}
+            />
         </Box>
     )
 }
