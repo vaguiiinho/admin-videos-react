@@ -20,12 +20,6 @@ export function CategoryList() {
     const { data, isFetching, error } = useGetCategoriesQuery(options);
     const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
 
-    const {data: dataCast} = useGetCastMembersQuery({
-        ...options,
-    })
-
-    console.log(dataCast)
-
     const { enqueueSnackbar } = useSnackbar()
 
     function onPaginationModelChange(model: GridPaginationModel) {
