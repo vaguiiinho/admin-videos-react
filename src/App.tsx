@@ -7,6 +7,7 @@ import { appTheme } from './config/theme';
 import { CategoryCreate } from './features/categories/CategoryCreate';
 import { CategoryList } from './features/categories/CategoryList';
 import { CategoryUpdate } from './features/categories/CategoryUpdate';
+import { ListCastMembers } from './features/cast/ListCastMembers';
 
 export default function App() {
   return (
@@ -30,10 +31,15 @@ export default function App() {
           <Layout>
             <Routes>
               <Route index element={<CategoryList />} />
+              {/* category */}
               <Route path="categories" element={<CategoryList />} />
               <Route path="categories/create" element={<CategoryCreate />} />
               <Route path="categories/update/:id" element={<CategoryUpdate />} />
 
+              {/* category */}
+              <Route path="cast-members" element={<ListCastMembers />} />
+
+              {/* 404 */}
               <Route path="*" element={
                 <Box sx={{ color: "white" }}>
                   <Typography variant="h1">
