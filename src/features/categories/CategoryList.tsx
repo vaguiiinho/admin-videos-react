@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlice";
 import { CategoryTable } from "./components/CategoryTable";
+import { useGetCastMembersQuery } from "../cast/castMemberSlice";
 
 export function CategoryList() {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
@@ -18,6 +19,12 @@ export function CategoryList() {
 
     const { data, isFetching, error } = useGetCategoriesQuery(options);
     const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
+
+    const {data: dataCast} = useGetCastMembersQuery({
+        ...options,
+    })
+
+    console.log(dataCast)
 
     const { enqueueSnackbar } = useSnackbar()
 

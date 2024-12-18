@@ -1,4 +1,4 @@
-export interface Result {
+export interface Results {
     data: CastMember[];
     links: Links
     meta: Meta;
