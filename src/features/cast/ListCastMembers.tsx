@@ -1,44 +1,75 @@
 import { GridFilterModel, GridPaginationModel } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { useGetCastMembersQuery } from './castMemberSlice';
-import { Typography } from '@mui/material';
+import { useDeleteCastMemberMutation, useGetCastMembersQuery } from './castMemberSlice';
+import { Box, Button, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
+const initialOptions = {
+    page: 1,
+    totalPage: 10,
+    filter: "",
+    rowsPerPage: [5, 10, 15, 20, 50]
+}
 export function ListCastMembers() {
-    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
-    const [search, setSearch] = useState("")
-    const [rowsPerPage] = useState([5, 10, 15, 20, 50])
-    const options = {
-        page: paginationModel.page + 1, // Página começa em 1 na API
-        totalPage: paginationModel.pageSize,
-        filter: search,
-    };
-
+    const [options, setOptions] = useState(initialOptions)
     const { data, isFetching, error } = useGetCastMembersQuery(options);
+    const [deleteCastMember, deleteCastMembersStatus] = useDeleteCastMemberMutation()
+
+    const { enqueueSnackbar } = useSnackbar()
+
+    async function handleDeleteCastMember(id: string) {
+        await deleteCastMember({ id })
+    }
 
     function onPaginationModelChange(model: GridPaginationModel) {
-        setPaginationModel(model)
+        setOptions({
+            ...options,
+            page: model.page + 1,
+            totalPage: model.pageSize,
+        })
     }
 
     function handleFilterChange(filterModel: GridFilterModel) {
         if (filterModel.quickFilterValues?.length === 1) {
             const quickFilterValue = filterModel.quickFilterValues.join(" ")
-            return setSearch(quickFilterValue)
+            return setOptions({
+                ...options,
+                filter: quickFilterValue,
+            })
         }
 
-        return setSearch("")
+        return { ...options, filter: "" }
     }
 
     useEffect(() => {
-        if (error) {
-            console.log(error)
+
+        if (deleteCastMembersStatus.isSuccess) {
+            enqueueSnackbar(`Cast member deleted, {variant: success}`)
         }
-    }, [error]);
+        if (deleteCastMembersStatus.error) {
+            enqueueSnackbar(`Cast member not deleted, {variant: error}`)
+        }
+    }, [deleteCastMembersStatus, enqueueSnackbar]);
 
     if (error) {
         return <Typography>Error fetching categories</Typography>
     }
 
     return (
-        <div>ListCastMembers</div>
+        <Box maxWidth="lg" sx={{ my: 4 }}>
+            <Box display="flex" justifyContent="end">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    component={Link}
+                    to="/cast-members/create"
+                    style={{ marginBottom: "1rem" }}
+                >
+                    New Cast Member
+                </Button>
+            </Box>
+
+        </Box>
     )
 }
