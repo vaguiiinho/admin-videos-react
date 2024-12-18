@@ -1,14 +1,14 @@
 export interface Result {
-    data: CastMembers[];
+    data: CastMember[];
     links: Links
     meta: Meta;
 }
 
-export interface CastMembers {
+export interface CastMember {
     id: string;
     name: string;
     type: number;
-    createdAt: Date;
+    createdAt: string;
 }
 
 export interface Links {
