@@ -9,6 +9,7 @@ import { CategoryList } from './features/categories/CategoryList';
 import { CategoryUpdate } from './features/categories/CategoryUpdate';
 import { ListCastMembers } from './features/cast/ListCastMembers';
 import { CreateCastMember } from './features/cast/CreateCastMember';
+import { UpdateCastMember } from './features/cast/UpdateCastMember';
 
 export default function App() {
   return (
@@ -40,7 +41,7 @@ export default function App() {
               {/* category */}
               <Route path="cast-members" element={<ListCastMembers />} />
               <Route path="cast-members/create" element={<CreateCastMember />} />
-
+              <Route path="cast-members/update/:id" element={<UpdateCastMember />} />
 
               {/* 404 */}
               <Route path="*" element={

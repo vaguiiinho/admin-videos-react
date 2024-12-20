@@ -1,5 +1,4 @@
-import { CastMember, CastMemberParams, Results } from "../../types/CastMembers";
-import { Result } from "../../types/category";
+import { CastMember, CastMemberParams, Result, Results } from "../../types/CastMembers";
 import { apiSlice } from "../api/apiSlice";
 
 const endpointUrl = "/cast-members"
@@ -63,6 +62,7 @@ function updateCastMember(castMember: CastMember) {
 }
 
 function createCastMember(castMember: CastMember) {
+    console.log('castMember')
     return {
         url: endpointUrl,
         method: 'POST',
