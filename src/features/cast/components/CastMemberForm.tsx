@@ -20,7 +20,6 @@ type Props = {
     isLoading: boolean
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    handleToggle: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function CastMemberForm({
@@ -57,13 +56,14 @@ export function CastMemberForm({
                                     <FormLabel>Type</FormLabel>
                                     <RadioGroup
                                         aria-labelledby="type of cast member"
-                                        defaultValue="Director"
+                                        defaultValue={1}
                                         name="type"
+                                        onChange={handleChange}
                                         value={castMember.type}
-                                    />
-                                    <FormControlLabel value={1} control={<Radio />} label="Director" />
-                                    <FormControlLabel value={2} control={<Radio />} label="Actor"
-                                    />
+                                    >
+                                        <FormControlLabel value={1} control={<Radio />} label="Director" />
+                                        <FormControlLabel value={2} control={<Radio />} label="Actor" />
+                                    </RadioGroup>
                                 </FormGroup>
                             </Grid>
                             <Grid size={12}>
