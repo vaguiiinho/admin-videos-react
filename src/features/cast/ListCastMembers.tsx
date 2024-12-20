@@ -6,14 +6,13 @@ import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { CastMemberTable } from './components/CastMemberTable';
 
-const initialOptions = {
-    page: 0,
-    totalPage: 10,
-    filter: "",
-    rowsPerPage: [5, 10, 15, 20, 50]
-}
 export function ListCastMembers() {
-    const [options, setOptions] = useState(initialOptions)
+    const [options, setOptions] = useState({
+        page: 0,
+        totalPage: 10,
+        filter: "",
+        rowsPerPage: [5, 10, 15, 20, 50]
+    })
     const { data, isFetching, error } = useGetCastMembersQuery(options);
     const [deleteCastMember, deleteCastMembersStatus] = useDeleteCastMemberMutation()
 
