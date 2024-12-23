@@ -17,7 +17,7 @@ import { CastMember } from "../../../types/CastMembers";
 type Props = {
     castMember: CastMember
     isDisabled?: boolean
-    isLoading: boolean
+    isLoading?: boolean
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
@@ -25,7 +25,7 @@ type Props = {
 export function CastMemberForm({
     castMember,
     isDisabled = false,
-    isLoading,
+    isLoading = false,
     handleSubmit,
     handleChange,
 }: Props) {
@@ -46,7 +46,6 @@ export function CastMemberForm({
                                         name="name"
                                         label="Name"
                                         value={castMember.name}
-                                        disabled={isDisabled}
                                         onChange={handleChange}
                                     />
                                 </FormControl>
@@ -75,8 +74,8 @@ export function CastMemberForm({
                                         type="submit"
                                         variant="contained"
                                         color="secondary"
-                                        disabled={isDisabled}
-                                    >Save</Button>
+                                        disabled={isDisabled || isLoading}
+                                    >{isLoading ? "Loading..." : "Save"}</Button>
                                 </Box>
                             </Grid>
                         </Grid>

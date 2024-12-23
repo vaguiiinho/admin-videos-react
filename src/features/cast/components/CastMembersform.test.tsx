@@ -23,4 +23,21 @@ describe("CastMemberForm", () => {
 
     expect(asFragment()).toMatchSnapshot();
   });
+
+  it("should render castMember from with loading state", () => {
+    const { asFragment } = render(<CastMemberForm {...Props} isLoading />, {
+      wrapper: BrowserRouter
+    });
+
+    expect(asFragment()).toMatchSnapshot();
+  })
+
+  it("should render castMember from with disabled state", () => {
+    const { asFragment } = render(
+      <CastMemberForm {...Props} isDisabled={false} isLoading={false} />, {
+      wrapper: BrowserRouter
+    });
+
+    expect(asFragment()).toMatchSnapshot();
+  })
 });
