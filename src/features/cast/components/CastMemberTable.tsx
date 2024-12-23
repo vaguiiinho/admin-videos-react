@@ -6,8 +6,7 @@ import {
     GridFilterModel,
     GridPaginationModel,
     GridRenderCellParams,
-    GridRowsProp,
-    GridToolbar,
+    GridToolbar
 } from "@mui/x-data-grid"
 import { Link } from "react-router-dom"
 import { Results } from "../../../types/CastMembers"
@@ -37,9 +36,6 @@ export function CastMemberTable({
             showQuickFilter: true,
         },
     };
-
-    const rows: GridRowsProp = data ? mapDataToGridRows(data) : []
-
 
     const columns: GridColDef[] = [
         {
@@ -114,7 +110,8 @@ export function CastMemberTable({
         )
     }
 
-    const rowCount = data?.meta.total || 0
+    const rows = data ? mapDataToGridRows(data) : [];
+    const rowCount = data?.meta.total || 0;
 
     return (
         <Box sx={{ display: "flex", height: 600 }}>

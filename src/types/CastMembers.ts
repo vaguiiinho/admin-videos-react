@@ -18,7 +18,7 @@ export interface CastMember {
 }
 
 export interface Links {
-    prev: null;
+    prev: string;
     last: string;
     next: string;
     first: string;
