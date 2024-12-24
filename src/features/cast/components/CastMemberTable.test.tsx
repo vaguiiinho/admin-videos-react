@@ -7,7 +7,6 @@ const props = {
     data: {
         data: [
             { id: "1", name: "John Doe", type: 1, createdAt: "2024-12-23" },
-            { id: "2", name: "Jane Doe", type: 2, createdAt: "2024-12-23" },
         ],
         meta: {
             to: 1,
@@ -58,4 +57,22 @@ describe("CstMemberTable", () => {
 
         expect(asFragment()).toMatchSnapshot();
     })
+
+    it("should render correctly type", () => {
+        const { asFragment } = render(
+            <CastMemberTable
+                {...props}
+                data={{
+                    data: [{ ...props.data.data[0], type: 2 }],
+                    links: { ...props.data.links },
+                    meta: { ...props.data.meta },
+                }}
+            />,
+            {
+                wrapper: BrowserRouter,
+            }
+        );
+
+        expect(asFragment()).toMatchSnapshot();
+    });
 })
