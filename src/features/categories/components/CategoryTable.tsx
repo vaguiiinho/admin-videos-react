@@ -13,7 +13,7 @@ import { Link } from "react-router-dom"
 import { Results } from "../../../types/category"
 
 type Props = {
-    paginationModel: any
+    paginationModel: GridPaginationModel
     isFetching: boolean
     pageSizeOptions: number[]
     data: Results | undefined

@@ -11,12 +11,11 @@ const props = {
         meta: {
             to: 1,
             from: 1,
-            total: 2,
-            perPage: 2,
-            lastPage: 2,
-            firstPage: 1,
-            currentPage: 1,
-
+            total: 1,
+            per_page: 1,
+            last_page: 1,
+            first_page: 1,
+            current_page: 1,
         },
         links: {
             prev: "",

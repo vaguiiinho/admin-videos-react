@@ -12,7 +12,7 @@ import { Link } from "react-router-dom"
 import { Results } from "../../../types/CastMembers"
 
 type Props = {
-    paginationModel: any
+    paginationModel: GridPaginationModel
     isFetching: boolean
     pageSizeOptions: number[]
     data: Results | undefined

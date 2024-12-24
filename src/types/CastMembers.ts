@@ -26,13 +26,13 @@ export interface Links {
 
 
 export interface Meta {
+    total: number;
+    current_page: number;
+    first_page: number;
+    last_page: number;
+    per_page: number;
     to: number;
     from: number;
-    total: number;
-    perPage: number;
-    lastPage: number;
-    firstPage: number;
-    currentPage: number;
 }
 
 
