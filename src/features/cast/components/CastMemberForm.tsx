@@ -75,7 +75,9 @@ export function CastMemberForm({
                                         variant="contained"
                                         color="secondary"
                                         disabled={isDisabled || isLoading}
-                                    >{isLoading ? "Loading..." : "Save"}</Button>
+                                    >
+                                        {isLoading ? "Loading..." : "Save"}
+                                    </Button>
                                 </Box>
                             </Grid>
                         </Grid>

@@ -5,7 +5,8 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { Category, useCreateCategoryMutation } from "./categorySlice";
+import { Category } from "../../types/category";
+import { useCreateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 
 export function CategoryCreate() {

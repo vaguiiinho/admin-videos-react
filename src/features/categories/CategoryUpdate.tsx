@@ -2,7 +2,8 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Category, useGetCategoryQuery, useUpdateCategoryMutation } from "./categorySlice";
+import { Category } from "../../types/category";
+import { useGetCategoryQuery, useUpdateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 export function CategoryUpdate() {
 
