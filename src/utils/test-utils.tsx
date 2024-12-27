@@ -1,52 +1,33 @@
-import { configureStore } from '@reduxjs/toolkit'
-import type { RenderOptions } from '@testing-library/react'
-import { render } from '@testing-library/react'
-import React, { PropsWithChildren } from 'react'
-import { Provider } from 'react-redux'
+import React, { PropsWithChildren } from "react";
+import { render } from "@testing-library/react";
+import type { RenderOptions } from "@testing-library/react";
+import type { PreloadedState } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
 
-import type { RootState } from '../app/store'
-// As a basic setup, import your same slice reducers
-import { apiSlice } from '../features/api/apiSlice'
-import { SnackbarProvider } from 'notistack'
-import { BrowserRouter } from 'react-router-dom'
+import { AppStore, RootState, setupStore } from "../app/store";
+import { SnackbarProvider } from "notistack";
+import { BrowserRouter } from "react-router-dom";
 
-// This type interface extends the default options for render from RTL, as well
-// as allows the user to specify other things such as initialState, store.
-interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
-    preloadedState?: Partial<RootState>
-    store?: ReturnType<typeof configureStore>
+interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {
+  preloadedState?: PreloadedState<RootState>;
+  store?: AppStore;
 }
 
 export function renderWithProviders(
-    ui: React.ReactElement,
-    extendedRenderOptions: ExtendedRenderOptions = {}
+  ui: React.ReactElement,
+  { store = setupStore(), ...renderOptions }: ExtendedRenderOptions = {}
 ) {
-    const {
+  function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
+    return (
+      <Provider store={store}>
+        <BrowserRouter>
+          <SnackbarProvider>{children}</SnackbarProvider>
+        </BrowserRouter>
+      </Provider>
+    );
+  }
 
-        // Automatically create a store instance if no store was passed in
-        store = configureStore({
-            reducer: {
-                [apiSlice.reducerPath]: apiSlice.reducer,
-            },
-            middleware: (getDefaultMiddleware) =>
-                getDefaultMiddleware().concat(apiSlice.middleware),
-        }),
-        ...renderOptions
-    } = extendedRenderOptions
-
-    const Wrapper = ({ children }: PropsWithChildren) => (
-        <Provider store={store}>
-            <BrowserRouter>
-                <SnackbarProvider>
-                    {children}
-                </SnackbarProvider>
-            </BrowserRouter>
-        </Provider>
-    )
-
-    // Return an object with the store and all of RTL's query functions
-    return {
-        store,
-        ...render(ui, { wrapper: Wrapper, ...renderOptions })
-    }
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
+
+export * from "@testing-library/react";
