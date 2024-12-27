@@ -28,7 +28,8 @@ export function renderWithProviders(
             reducer: {
                 [apiSlice.reducerPath]: apiSlice.reducer,
             },
-
+            middleware: (getDefaultMiddleware) =>
+                getDefaultMiddleware().concat(apiSlice.middleware),
         }),
         ...renderOptions
     } = extendedRenderOptions
