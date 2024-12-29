@@ -1,12 +1,10 @@
 export interface Results {
     data: Category[];
-    links: Links;
     meta: Meta;
 }
 
 export interface Result {
     data: Category;
-    links: Links;
     meta: Meta;
 }
 
@@ -16,13 +14,6 @@ export interface Category {
     description: string;
     is_active: boolean;
     created_at: string;
-}
-
-export interface Links {
-    prev: string;
-    last: string;
-    next: string;
-    first: string;
 }
 
 export interface Meta {

@@ -16,12 +16,6 @@ const props = {
             last_page: 1,
             first_page: 1,
             current_page: 1,
-        },
-        links: {
-            prev: "",
-            last: "http://localhost:3000/api/cast-members?page=2&totalPage=2",
-            next: "http://localhost:3000/api/cast-members?page=2&totalPage=2",
-            first: "http://localhost:3000/api/cast-members?page=1&totalPage=2",
         }
     },
     paginationModel: { page: 0, pageSize: 10 },
@@ -63,7 +57,6 @@ describe("CstMemberTable", () => {
                 {...props}
                 data={{
                     data: [{ ...props.data.data[0], type: 2 }],
-                    links: { ...props.data.links },
                     meta: { ...props.data.meta },
                 }}
             />,
