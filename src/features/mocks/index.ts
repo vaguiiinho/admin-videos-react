@@ -18,3 +18,24 @@ export const categoryResponse = {
     "from": 15
   }
 };
+
+export const categoryResponsePage2 = {
+  data: [
+    {
+      "id": "e461e21f-1db6-42d7-b3f4-19c221630903",
+      "name": "Dr. Amina Schulist",
+      "description": "Rerum eos labore rerum modi nihil blanditiis qui magnam laudantium necessitatibus ea.",
+      "is_active": true,
+      "created_at": "2024-12-27 18:34:59"
+    },
+  ],
+  "meta": {
+    "total": 110,
+    "current_page": 2,
+    "first_page": 16,
+    "last_page": 8,
+    "per_page": 15,
+    "to": 16,
+    "from": 30
+  }
+};

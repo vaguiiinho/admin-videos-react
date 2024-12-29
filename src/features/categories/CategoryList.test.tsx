@@ -1,14 +1,17 @@
-import { renderWithProviders, screen, waitFor } from "../../utils/test-utils";
+import { fireEvent, renderWithProviders, screen, waitFor } from "../../utils/test-utils";
 import { baseUrl } from "../api/apiSlice";
-import { categoryResponse } from "../mocks";
+import { categoryResponse, categoryResponsePage2 } from "../mocks";
 import { CategoryList } from "./CategoryList";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
 export const handlers = [
-    rest.get('', (req, res, ctx) => {
-        return res(ctx.json(categoryResponse), ctx.delay(150));
-    }),
+  rest.get('', (req, res, ctx) => {
+    if (req.url.searchParams.get("page") === "2") {
+      return res(ctx.json(categoryResponsePage2), ctx.delay(150));
+    }
+    return res(ctx.json(categoryResponse), ctx.delay(150));
+  }),
 ];
 
 const server = setupServer(...handlers);
@@ -50,6 +53,23 @@ describe("CategoryList", () => {
         await waitFor(() => {
           const error = screen.getByText("Error fetching categories");
           expect(error).toBeInTheDocument();
+        });
+      });
+
+      it("should handle On PageChange", async () => {
+        renderWithProviders(<CategoryList />);
+    
+        await waitFor(() => {
+          const name = screen.getByText("Jackeline Mills PhD");
+          expect(name).toBeInTheDocument();
+        });
+    
+        const nextButton = screen.getByTestId("KeyboardArrowRightIcon");
+        fireEvent.click(nextButton);
+    
+        await waitFor(() => {
+          const name = screen.getByText("Dr. Amina Schulist");
+          expect(name).toBeInTheDocument();
         });
       });
 });
