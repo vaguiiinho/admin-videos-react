@@ -12,84 +12,129 @@ export const handlers = [
     }
     return res(ctx.json(categoryResponse), ctx.delay(150));
   }),
+
+  rest.delete('', (req, res, ctx) => {
+    return res(ctx.delay(150), ctx.status(204));
+  }
+  ),
 ];
 
 const server = setupServer(...handlers);
 
 describe("CategoryList", () => {
-    afterAll(() => server.close());
-    beforeAll(() => server.listen());
-    afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
 
-    it("should render correctly", () => {
-        const { asFragment } = renderWithProviders(<CategoryList />);
-        expect(asFragment()).toMatchSnapshot();
+  it("should render correctly", () => {
+    const { asFragment } = renderWithProviders(<CategoryList />);
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it("should render loading state", () => {
+    renderWithProviders(<CategoryList />);
+    const loading = screen.getByRole("progressbar");
+    expect(loading).toBeInTheDocument();
+  });
+
+  it("should render success state", async () => {
+    renderWithProviders(<CategoryList />);
+
+    await waitFor(() => {
+      const name = screen.getByText("Dr. Pierre Beahan");
+      expect(name).toBeInTheDocument();
+    });
+  });
+
+  it("should render error state", async () => {
+    server.use(
+      rest.get(`${baseUrl}/categories`, (_, res, ctx) => {
+        return res(ctx.status(500));
+      })
+    );
+
+    renderWithProviders(<CategoryList />);
+
+    await waitFor(() => {
+      const error = screen.getByText("Error fetching categories");
+      expect(error).toBeInTheDocument();
+    });
+  });
+
+  it("should handle On PageChange", async () => {
+    renderWithProviders(<CategoryList />);
+
+    await waitFor(() => {
+      const name = screen.getByText("Jackeline Mills PhD");
+      expect(name).toBeInTheDocument();
     });
 
-    it("should render loading state", () => {
-        renderWithProviders(<CategoryList />);
-        const loading = screen.getByRole("progressbar");
-        expect(loading).toBeInTheDocument();
+    const nextButton = screen.getByTestId("KeyboardArrowRightIcon");
+    fireEvent.click(nextButton);
+
+    await waitFor(() => {
+      const name = screen.getByText("Dr. Amina Schulist");
+      expect(name).toBeInTheDocument();
+    });
+  });
+
+  it("should handle filter change", async () => {
+    renderWithProviders(<CategoryList />);
+    // esperar que o elemento seja renderizado
+    await waitFor(() => {
+      const name = screen.getByText("Jackeline Mills PhD");
+      expect(name).toBeInTheDocument();
+    });
+    // pegar o input com o placeholder "Search..."
+    const input = screen.getByPlaceholderText("Search…");
+
+    // Fire event on change
+    fireEvent.change(input, { target: { value: "Dr." } });
+
+    await waitFor(() => {
+      const loading = screen.getByRole("progressbar");
+      expect(loading).toBeInTheDocument();
+    });
+  });
+
+  it("should handle Delete Category success", async () => {
+    renderWithProviders(<CategoryList />);
+
+    await waitFor(() => {
+      const name = screen.getByText("Jackeline Mills PhD");
+      expect(name).toBeInTheDocument();
     });
 
-    it("should render success state", async () => {
-        renderWithProviders(<CategoryList />);
+    const deleteButton = screen.getAllByTestId("DeleteSharpIcon")[0];
+    fireEvent.click(deleteButton);
 
-        await waitFor(() => {
-            const name = screen.getByText("Jackeline Mills PhD");
-            expect(name).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      const name = screen.getByText("Category deleted");
+      expect(name).toBeInTheDocument();
+    });
+  });
+
+  it("should handle Delete Category error", async () => {
+    server.use(
+      rest.delete('', (_, res, ctx) => {
+        return res(ctx.delay(150), ctx.status(500));
+      }
+      )
+    );
+
+    renderWithProviders(<CategoryList />);
+
+    await waitFor(() => {
+      const name = screen.getByText("Jackeline Mills PhD");
+      expect(name).toBeInTheDocument();
     });
 
-    it("should render error state", async () => {
-        server.use(
-          rest.get(`${baseUrl}/categories`, (_, res, ctx) => {
-            return res(ctx.status(500));
-          })
-        );
-    
-        renderWithProviders(<CategoryList />);
-    
-        await waitFor(() => {
-          const error = screen.getByText("Error fetching categories");
-          expect(error).toBeInTheDocument();
-        });
-      });
+    const deleteButton = screen.getAllByTestId("delete-button")[0];
+    fireEvent.click(deleteButton);
 
-      it("should handle On PageChange", async () => {
-        renderWithProviders(<CategoryList />);
-    
-        await waitFor(() => {
-          const name = screen.getByText("Jackeline Mills PhD");
-          expect(name).toBeInTheDocument();
-        });
-    
-        const nextButton = screen.getByTestId("KeyboardArrowRightIcon");
-        fireEvent.click(nextButton);
-    
-        await waitFor(() => {
-          const name = screen.getByText("Dr. Amina Schulist");
-          expect(name).toBeInTheDocument();
-        });
-      });
-
-      it("should handle filter change", async () => {
-        renderWithProviders(<CategoryList />);
-        // esperar que o elemento seja renderizado
-        await waitFor(() => {
-          const name = screen.getByText("Jackeline Mills PhD");
-          expect(name).toBeInTheDocument();
-        });
-        // pegar o input com o placeholder "Search..."
-        const input = screen.getByPlaceholderText("Search…");
-    
-        // Fire event on change
-        fireEvent.change(input, { target: { value: "Dr. Pierre Beahan" } });
-    
-        await waitFor(() => {
-          const loading = screen.getByRole("progressbar");
-          expect(loading).toBeInTheDocument();
-        });
-      });
-    
+    await waitFor(() => {
+      const name = screen.getByText("Category not deleted");
+      expect(name).toBeInTheDocument();
+    });
+  });
 });
