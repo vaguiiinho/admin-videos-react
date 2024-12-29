@@ -72,4 +72,24 @@ describe("CategoryList", () => {
           expect(name).toBeInTheDocument();
         });
       });
+
+      it("should handle filter change", async () => {
+        renderWithProviders(<CategoryList />);
+        // esperar que o elemento seja renderizado
+        await waitFor(() => {
+          const name = screen.getByText("Jackeline Mills PhD");
+          expect(name).toBeInTheDocument();
+        });
+        // pegar o input com o placeholder "Search..."
+        const input = screen.getByPlaceholderText("Search…");
+    
+        // Fire event on change
+        fireEvent.change(input, { target: { value: "Dr. Pierre Beahan" } });
+    
+        await waitFor(() => {
+          const loading = screen.getByRole("progressbar");
+          expect(loading).toBeInTheDocument();
+        });
+      });
+    
 });

@@ -6,6 +6,12 @@ export const categoryResponse = {
       "description": "Autem provident veniam voluptatibus hic atque ut consequatur nam iure a maiores qui.",
       "is_active": true,
       "created_at": "2024-12-27 18:35:00"
+    }, {
+      "id": "fdbb7cd5-5fe5-4a7c-a5f5-c991cc45fd1c",
+      "name": "Dr. Pierre Beahan",
+      "description": "Expedita maxime est eaque ipsa dolor consequatur est voluptatem consectetur quaerat ut beatae blanditiis.",
+      "is_active": true,
+      "created_at": "2024-12-27 18:35:00"
     },
   ],
   "meta": {
