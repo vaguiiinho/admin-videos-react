@@ -1,30 +1,14 @@
 import { fireEvent, renderWithProviders, screen, waitFor } from "../../utils/test-utils";
-import { baseUrl } from "../api/apiSlice";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import { categoryResponse, categoryResponsePage2 } from "../mocks";
 import { CategoryList } from "./CategoryList";
-import { rest } from "msw";
-import { setupServer } from "msw/node";
 
-export const handlers = [
-  rest.get('', (req, res, ctx) => {
-    if (req.url.searchParams.get("page") === "2") {
-      return res(ctx.json(categoryResponsePage2), ctx.delay(150));
-    }
-    return res(ctx.json(categoryResponse), ctx.delay(150));
-  }),
-
-  rest.delete('', (req, res, ctx) => {
-    return res(ctx.delay(150), ctx.status(204));
-  }
-  ),
-];
-
-const server = setupServer(...handlers);
+const mock = new MockAdapter(axios);
 
 describe("CategoryList", () => {
-  afterAll(() => server.close());
-  beforeAll(() => server.listen());
-  afterEach(() => server.resetHandlers());
+  afterEach(() => mock.reset());
+  afterAll(() => mock.restore());
 
   it("should render correctly", () => {
     const { asFragment } = renderWithProviders(<CategoryList />);
@@ -38,20 +22,28 @@ describe("CategoryList", () => {
   });
 
   it("should render success state", async () => {
+    mock.onGet("/categories").reply(200, {
+      data: [
+        {
+          id: "fcc1374f-48dc-4f0a-8ef3-81e7a8c25748",
+          name: "Dr. Dayton Kuhlman",
+          description: "Asperiores vitae repellendus impedit sequi ea saepe itaque expedita in quam iure ut id.",
+          is_active: true,
+          created_at: "2024-12-27 18:34:59",
+        },
+      ],
+    });
+
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Pierre Beahan");
+      const name = screen.getByText("Dr. Dayton Kuhlman");
       expect(name).toBeInTheDocument();
     });
   });
 
   it("should render error state", async () => {
-    server.use(
-      rest.get(`${baseUrl}/categories`, (_, res, ctx) => {
-        return res(ctx.status(500));
-      })
-    );
+    mock.onGet("/categories").reply(500);
 
     renderWithProviders(<CategoryList />);
 
@@ -62,10 +54,16 @@ describe("CategoryList", () => {
   });
 
   it("should handle On PageChange", async () => {
+    mock
+      .onGet("/categories?page=1")
+      .reply(200, categoryResponse)
+      .onGet("/categories?page=2")
+      .reply(200, categoryResponsePage2);
+
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Jackeline Mills PhD");
+      const name = screen.getByText("Dr. Dayton Kuhlman");
       expect(name).toBeInTheDocument();
     });
 
@@ -73,68 +71,74 @@ describe("CategoryList", () => {
     fireEvent.click(nextButton);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Amina Schulist");
+      const name = screen.getByText("Dr. Darion Upton");
       expect(name).toBeInTheDocument();
     });
   });
 
   it("should handle filter change", async () => {
-    renderWithProviders(<CategoryList />);
-    // esperar que o elemento seja renderizado
-    await waitFor(() => {
-      const name = screen.getByText("Jackeline Mills PhD");
-      expect(name).toBeInTheDocument();
+    mock.onGet("/categories?search=Dr.").reply(200, {
+      data: [
+        {
+          id: "fcc1374f-48dc-4f0a-8ef3-81e7a8c25748",
+          name: "Dr. Dayton Kuhlman",
+        },
+      ],
     });
-    // pegar o input com o placeholder "Search..."
-    const input = screen.getByPlaceholderText("Search…");
 
-    // Fire event on change
+    renderWithProviders(<CategoryList />);
+
+    const input = screen.getByPlaceholderText("Search…");
     fireEvent.change(input, { target: { value: "Dr." } });
 
     await waitFor(() => {
       const loading = screen.getByRole("progressbar");
       expect(loading).toBeInTheDocument();
     });
+
+    await waitFor(() => {
+      const name = screen.getByText("Dr. Dayton Kuhlman");
+      expect(name).toBeInTheDocument();
+    });
   });
 
   it("should handle Delete Category success", async () => {
+    mock.onGet("/categories").reply(200, categoryResponse);
+    mock.onDelete("/categories/fcc1374f-48dc-4f0a-8ef3-81e7a8c25748").reply(200);
+
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Jackeline Mills PhD");
+      const name = screen.getByText("Dr. Dayton Kuhlman");
       expect(name).toBeInTheDocument();
     });
 
-    const deleteButton = screen.getAllByTestId("DeleteSharpIcon")[0];
+    const deleteButton = screen.getByTestId("DeleteSharpIcon");
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      const name = screen.getByText("Category deleted");
-      expect(name).toBeInTheDocument();
+      const message = screen.getByText("Category deleted");
+      expect(message).toBeInTheDocument();
     });
   });
 
   it("should handle Delete Category error", async () => {
-    server.use(
-      rest.delete('', (_, res, ctx) => {
-        return res(ctx.delay(150), ctx.status(500));
-      }
-      )
-    );
+    mock.onGet("/categories").reply(200, categoryResponse);
+    mock.onDelete("/categories/fdbb7cd5-5fe5-4a7c-a5f5-c991cc45fd1c").reply(500);
 
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Jackeline Mills PhD");
+      const name = screen.getByText("Dr. Dayton Kuhlman");
       expect(name).toBeInTheDocument();
     });
 
-    const deleteButton = screen.getAllByTestId("delete-button")[0];
+    const deleteButton = screen.getByTestId("DeleteSharpIcon");
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      const name = screen.getByText("Category not deleted");
-      expect(name).toBeInTheDocument();
+      const message = screen.getByText("Category not deleted");
+      expect(message).toBeInTheDocument();
     });
   });
 });

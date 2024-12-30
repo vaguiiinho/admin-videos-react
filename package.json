@@ -10,7 +10,7 @@
     "@mui/material": "^6.1.8",
     "@mui/x-data-grid": "^7.22.3",
     "@reduxjs/toolkit": "^1.9.7",
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^27.5.2",
@@ -53,6 +53,18 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/dom": "^10.4.0",
-    "msw": "^0.47.3"
+    "axios": "^1.7.9",
+    "axios-mock-adapter": "^2.1.0",
+    "broadcast-channel": "^7.0.0",
+    "msw": "^2.7.0",
+    "util": "^0.12.5"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!axios)/"
+    ]
   }
 }

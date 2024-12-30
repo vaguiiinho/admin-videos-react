@@ -8,7 +8,7 @@ export const categoryResponse = {
       "created_at": "2024-12-27 18:35:00"
     }, {
       "id": "fdbb7cd5-5fe5-4a7c-a5f5-c991cc45fd1c",
-      "name": "Dr. Pierre Beahan",
+      "name": "Dr. Dayton Kuhlman",
       "description": "Expedita maxime est eaque ipsa dolor consequatur est voluptatem consectetur quaerat ut beatae blanditiis.",
       "is_active": true,
       "created_at": "2024-12-27 18:35:00"
@@ -29,7 +29,7 @@ export const categoryResponsePage2 = {
   data: [
     {
       "id": "e461e21f-1db6-42d7-b3f4-19c221630903",
-      "name": "Dr. Amina Schulist",
+      "name": "Dr. Darion Upton",
       "description": "Rerum eos labore rerum modi nihil blanditiis qui magnam laudantium necessitatibus ea.",
       "is_active": true,
       "created_at": "2024-12-27 18:34:59"
