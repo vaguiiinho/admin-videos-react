@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { CastMemberTable } from "./CastMemberTable";
+import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 
 const Props = {
   data: {
@@ -30,13 +31,13 @@ const Props = {
       next: "",
     },
   },
-  perPage: 15,
+  paginationModel: { page: 0, pageSize: 10 },
   isFetching: false,
-  rowsPerPage: [15, 25, 50],
-  handleOnPageChange: () => {},
-  handleFilterChange: () => {},
-  handleOnPageSizeChange: () => {},
-  handleDelete: () => {},
+  pageSizeOptions: [10, 20, 30],
+
+  onPaginationModelChange: (model: GridPaginationModel) => { },
+  handleFilterChange: (filterModel: GridFilterModel) => { },
+  handleDelete: (id: string) => { },
 };
 
 describe("CastMemberTable", () => {

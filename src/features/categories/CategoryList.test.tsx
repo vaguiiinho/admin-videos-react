@@ -12,7 +12,8 @@ import { CategoryList } from "./CategoryList";
 
 export const handlers = [
   rest.get(`${baseUrl}/categories`, (req, res, ctx) => {
-    if (req.url.searchParams.get("page") === "2") {
+    const page = req.url.searchParams.get("page")
+    if (page === "2") {
       return res(ctx.json(categoryResponsePage2), ctx.delay(150));
     }
     return res(ctx.json(categoryResponse), ctx.delay(150));
@@ -77,12 +78,13 @@ describe("CategoryList", () => {
     });
 
     const nextButton = screen.getByTestId("KeyboardArrowRightIcon");
-    fireEvent.click(nextButton);
+    fireEvent.click(nextButton)
 
     await waitFor(() => {
       const name = screen.getByText("SeaGreen");
       expect(name).toBeInTheDocument();
     });
+
   });
 
   it("should handle filter change", async () => {

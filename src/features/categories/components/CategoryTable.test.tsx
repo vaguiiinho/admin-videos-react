@@ -1,16 +1,17 @@
+import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { CategoriesTable } from "./CategoryTable";
 
 const Props = {
   data: undefined,
-  perPage: 10,
+  paginationModel: { page: 0, pageSize: 10 },
   isFetching: false,
-  rowsPerPage: [10, 25, 50],
-  handleOnPageChange: () => {},
-  handleFilterChange: () => {},
-  handleOnPageSizeChange: () => {},
-  handleDelete: () => {},
+  pageSizeOptions: [10, 20, 30],
+
+  onPaginationModelChange: (model: GridPaginationModel) => { },
+  handleFilterChange: (filterModel: GridFilterModel) => { },
+  handleDelete: (id: string) => { },
 };
 
 const mockData = {

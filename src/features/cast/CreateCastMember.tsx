@@ -9,7 +9,6 @@ export function CreateCastMember() {
     const [castMemberState, setCastMemberState] = useState<CastMember>(initialState)
     const [createCastMember, status] = useCreateCastMemberMutation()
     const { enqueueSnackbar } = useSnackbar()
-    const [isDisabled, setIsDisabled] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -23,12 +22,10 @@ export function CreateCastMember() {
 
     useEffect(() => {
         if (status.isSuccess) {
-            setIsDisabled(true)
             enqueueSnackbar('Category created!', { variant: "success" })
         }
 
         if (status.error) {
-            setIsDisabled(false)
             enqueueSnackbar('Error creating category!', { variant: "error" })
         }
     }, [enqueueSnackbar, status.error, status.isSuccess])

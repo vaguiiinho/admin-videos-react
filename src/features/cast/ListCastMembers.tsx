@@ -1,6 +1,6 @@
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { GridFilterModel } from "@mui/x-data-grid";
+import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -23,12 +23,12 @@ export const ListCastMembers = () => {
         await deleteCastMember({ id });
     }
 
-    function handleOnPageChange(page: number) {
-        setOptions({ ...options, page: page + 1 });
-    }
-
-    function handleOnPageSizeChange(perPage: number) {
-        setOptions({ ...options, perPage });
+    function onPaginationModelChange(model: GridPaginationModel) {
+        setOptions({
+            ...options,
+            page: model.page,
+            perPage: model.pageSize,
+        })
     }
 
     function handleFilterChange(filterModel: GridFilterModel) {
@@ -68,13 +68,12 @@ export const ListCastMembers = () => {
             </Box>
             <CastMemberTable
                 data={data}
-                perPage={options.perPage}
                 isFetching={isFetching}
-                rowsPerPage={options.rowsPerPage}
+                pageSizeOptions={options.rowsPerPage}
+                paginationModel={{ page: options.page, pageSize: options.perPage }}
                 handleDelete={handleDeleteCastMember}
-                handleOnPageChange={handleOnPageChange}
-                handleOnPageSizeChange={handleOnPageSizeChange}
                 handleFilterChange={handleFilterChange}
+                onPaginationModelChange={onPaginationModelChange}
             />
         </Box>
     );

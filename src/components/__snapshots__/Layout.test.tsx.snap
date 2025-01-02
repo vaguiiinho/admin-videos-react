@@ -6,7 +6,7 @@ exports[`Layout should render correctly 1`] = `
     class="MuiBox-root css-0"
   >
     <div
-      class="MuiContainer-root MuiContainer-maxWidthLg css-87kmc0-MuiContainer-root"
+      class="MuiContainer-root MuiContainer-maxWidthLg css-1g3nlq1-MuiContainer-root"
     >
       <h1>
         Hello World

@@ -3,6 +3,7 @@ import {
   DataGrid,
   GridColDef,
   GridFilterModel,
+  GridPaginationModel,
   GridRenderCellParams,
   GridToolbar,
 } from "@mui/x-data-grid";
@@ -12,33 +13,27 @@ import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 
 type Props = {
-  data: Results | undefined;
-  perPage: number;
-  isFetching: boolean;
-  rowsPerPage?: number[];
+  paginationModel: any
+  isFetching: boolean
+  pageSizeOptions: number[]
+  data: Results | undefined
 
-  handleOnPageChange: (page: number) => void;
-  handleFilterChange: (filterModel: GridFilterModel) => void;
-  handleOnPageSizeChange: (perPage: number) => void;
-  handleDelete: (id: string) => void;
-};
+  handleDelete: (id: string) => void
+  onPaginationModelChange: (model: GridPaginationModel) => void
+  handleFilterChange: (filterModel: GridFilterModel) => void
+}
 
 export function CastMemberTable({
   data,
-  perPage,
   isFetching,
-  rowsPerPage,
-  handleOnPageChange,
-  handleFilterChange,
-  handleOnPageSizeChange,
   handleDelete,
+  paginationModel,
+  pageSizeOptions,
+  handleFilterChange,
+  onPaginationModelChange,
 }: Props) {
-  const componentProps = {
-    toolbar: {
-      showQuickFilter: true,
-      quickFilterProps: { debounceMs: 500 },
-    },
-  };
+
+  const slotProps = { toolbar: { showQuickFilter: true } };
 
   const columns: GridColDef[] = [
     {
@@ -109,24 +104,23 @@ export function CastMemberTable({
     <Box sx={{ display: "flex", height: 600 }}>
       <DataGrid
         rows={rows}
-        pagination={true}
         columns={columns}
-        pageSize={perPage}
-        filterMode="server"
         rowCount={rowCount}
+        filterMode="server"
         loading={isFetching}
+        slotProps={slotProps}
         paginationMode="server"
         checkboxSelection={false}
         disableColumnFilter={true}
         disableColumnSelector={true}
         disableDensitySelector={true}
-        rowsPerPageOptions={rowsPerPage}
-        componentsProps={componentProps}
-        onPageChange={handleOnPageChange}
-        components={{ Toolbar: GridToolbar }}
+        slots={{ toolbar: GridToolbar }}
+        pageSizeOptions={pageSizeOptions}
+        disableRowSelectionOnClick={true}
+        paginationModel={paginationModel}
         onFilterModelChange={handleFilterChange}
-        onPageSizeChange={handleOnPageSizeChange}
+        onPaginationModelChange={onPaginationModelChange}
       />
     </Box>
-  );
+  )
 }
