@@ -4,12 +4,12 @@ import { Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Layout } from './components/Layout';
 import { appTheme } from './config/theme';
+import { CreateCastMember } from './features/cast/CreateCastMember';
+import { ListCastMembers } from './features/cast/ListCastMembers';
+import { UpdateCastMember } from './features/cast/UpdateCastMember';
 import { CategoryCreate } from './features/categories/CategoryCreate';
 import { CategoryList } from './features/categories/CategoryList';
 import { CategoryUpdate } from './features/categories/CategoryUpdate';
-import { ListCastMembers } from './features/cast/ListCastMembers';
-import { CreateCastMember } from './features/cast/CreateCastMember';
-import { UpdateCastMember } from './features/cast/UpdateCastMember';
 
 export default function App() {
   return (

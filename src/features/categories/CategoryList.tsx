@@ -1,78 +1,84 @@
 import { Box, Button, Typography } from "@mui/material";
-import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
+import { Link } from "react-router-dom";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoriesQuery,
+} from "./categorySlice";
+
+import { GridFilterModel } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useDeleteCategoryMutation, useGetCategoriesQuery } from "./categorySlice";
-import { CategoryTable } from "./components/CategoryTable";
+import { CategoriesTable } from "./components/CategoryTable";
 
-export function CategoryList() {
-    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
-    const [search, setSearch] = useState("")
-    const options = {
-        page: paginationModel.page + 1, // Página começa em 1 na API
-        totalPage: paginationModel.pageSize,
-        filter: search,
-    };
-    const [rowsPerPage] = useState([5, 10, 15, 20, 50])
+export const CategoryList = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [options, setOptions] = useState({
+    page: 1,
+    search: "",
+    perPage: 10,
+    rowsPerPage: [10, 20, 30],
+  });
+  const { data, isFetching, error } = useGetCategoriesQuery(options);
+  const [deleteCategory, { error: deleteError, isSuccess: deleteSuccess }] =
+    useDeleteCategoryMutation();
 
-    const { data, isFetching, error } = useGetCategoriesQuery(options);
-    const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation()
+  function handleOnPageChange(page: number) {
+    setOptions({ ...options, page: page + 1 });
+  }
 
-    const { enqueueSnackbar } = useSnackbar()
+  function handleOnPageSizeChange(perPage: number) {
+    setOptions({ ...options, perPage });
+  }
 
-    function onPaginationModelChange(model: GridPaginationModel) {
-        setPaginationModel(model)
+  function handleFilterChange(filterModel: GridFilterModel) {
+    if (!filterModel.quickFilterValues?.length) {
+      return setOptions({ ...options, search: "" });
     }
 
-    function handleFilterChange(filterModel: GridFilterModel) {
-        if (filterModel.quickFilterValues?.length === 1) {
-            const quickFilterValue = filterModel.quickFilterValues.join(" ")
-            return setSearch(quickFilterValue)
-        }
+    const search = filterModel.quickFilterValues.join("");
+    setOptions({ ...options, search });
+  }
 
-        return setSearch("")
+  async function handleDeleteCategory(id: string) {
+    await deleteCategory({ id });
+  }
+
+  useEffect(() => {
+    if (deleteSuccess) {
+      enqueueSnackbar(`Category deleted`, { variant: "success" });
     }
-
-    async function handleDeleteCategory(id: string) {
-        await deleteCategory({ id });
+    if (deleteError) {
+      enqueueSnackbar(`Category not deleted`, { variant: "error" });
     }
+  }, [deleteSuccess, deleteError, enqueueSnackbar]);
 
-    useEffect(() => {
-        if (deleteCategoryStatus.isSuccess) {
-            enqueueSnackbar("Category deleted", { variant: "success" });
-        }
-        if (deleteCategoryStatus.error) {
-            enqueueSnackbar("Category not deleted", { variant: "error" });
-        }
-    }, [deleteCategoryStatus, enqueueSnackbar]);
+  if (error) {
+    return <Typography>Error fetching categories</Typography>;
+  }
 
-    if (error) {
-        return <Typography>Error fetching categories</Typography>
-    }
-
-    return (
-        <Box maxWidth="lg" sx={{ my: 4 }}>
-            <Box display="flex" justifyContent="end">
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    component={Link}
-                    to="/categories/create"
-                    style={{ marginBottom: "1rem" }}
-                >
-                    New Category
-                </Button>
-            </Box>
-            <CategoryTable
-                data={data}
-                isFetching={isFetching}
-                pageSizeOptions={rowsPerPage}
-                paginationModel={paginationModel}
-                handleDelete={handleDeleteCategory}
-                handleFilterChange={handleFilterChange}
-                onPaginationModelChange={onPaginationModelChange}
-            />
-        </Box>
-    )
-}
+  return (
+    <Box maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box display="flex" justifyContent="flex-end">
+        <Button
+          variant="contained"
+          color="secondary"
+          component={Link}
+          to="/categories/create"
+          style={{ marginBottom: "1rem" }}
+        >
+          New Category
+        </Button>
+      </Box>
+      <CategoriesTable
+        data={data}
+        isFetching={isFetching}
+        perPage={options.perPage}
+        rowsPerPage={options.rowsPerPage}
+        handleDelete={handleDeleteCategory}
+        handleOnPageChange={handleOnPageChange}
+        handleOnPageSizeChange={handleOnPageSizeChange}
+        handleFilterChange={handleFilterChange}
+      />
+    </Box>
+  );
+};

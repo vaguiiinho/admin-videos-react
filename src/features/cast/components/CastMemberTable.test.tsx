@@ -1,70 +1,85 @@
-import { GridFilterModel, GridPaginationModel } from "@mui/x-data-grid";
 import { render } from "@testing-library/react";
-import { CastMemberTable } from "./CastMemberTable";
 import { BrowserRouter } from "react-router-dom";
+import { CastMemberTable } from "./CastMemberTable";
 
-const props = {
-    data: {
-        data: [
-            { id: "1", name: "John Doe", type: 1, createdAt: "2024-12-23" },
-        ],
-        meta: {
-            to: 1,
-            from: 1,
-            total: 1,
-            per_page: 1,
-            last_page: 1,
-            first_page: 1,
-            current_page: 1,
-        }
+const Props = {
+  data: {
+    data: [
+      {
+        id: "123",
+        type: 1,
+        name: "test",
+        deleted_at: "2021-03-01T00:00:00.000000Z",
+        created_at: "2021-03-01T00:00:00.000000Z",
+        updated_at: "2021-03-01T00:00:00.000000Z",
+      },
+    ],
+    meta: {
+      currentPage: 1,
+      from: 1,
+      lastPage: 1,
+      path: "http://localhost:8000/api/cast_members",
+      perPage: 1,
+      to: 1,
+      total: 1,
     },
-    paginationModel: { page: 0, pageSize: 10 },
-    isFetching: false,
-    pageSizeOptions: [10, 20, 30],
+    links: {
+      first: "http://localhost:8000/api/cast_members?page=1",
+      last: "http://localhost:8000/api/cast_members?page=1",
+      prev: "",
+      next: "",
+    },
+  },
+  perPage: 15,
+  isFetching: false,
+  rowsPerPage: [15, 25, 50],
+  handleOnPageChange: () => {},
+  handleFilterChange: () => {},
+  handleOnPageSizeChange: () => {},
+  handleDelete: () => {},
+};
 
-    onPaginationModelChange: (model: GridPaginationModel) => { },
-    handleFilterChange: (filterModel: GridFilterModel) => { },
-    handleDelete: (id: string) => { },
-}
-describe("CstMemberTable", () => {
-    it("should render cast member table correctly", () => {
-        const { asFragment } = render(<CastMemberTable {...props} />, {
-            wrapper: BrowserRouter,
-        });
-
-        expect(asFragment()).toMatchSnapshot();
-    })
-
-    it("should render cast member table with loading", () => {
-        const { asFragment } = render(<CastMemberTable {...props} isFetching />, {
-            wrapper: BrowserRouter,
-        });
-
-        expect(asFragment()).toMatchSnapshot();
-    })
-
-    it("should render cast member table with empty data", () => {
-        const { asFragment } = render(<CastMemberTable {...props} data={{ data: [], meta: {} } as any} />, {
-            wrapper: BrowserRouter,
-        });
-
-        expect(asFragment()).toMatchSnapshot();
-    })
-
-    it("should render correctly type", () => {
-        const { asFragment } = render(
-            <CastMemberTable
-                {...props}
-                data={{
-                    data: [{ ...props.data.data[0], type: 2 }],
-                    meta: { ...props.data.meta },
-                }}
-            />,
-            {
-                wrapper: BrowserRouter,
-            }
-        );
-
-        expect(asFragment()).toMatchSnapshot();
+describe("CastMemberTable", () => {
+  it("should render castMember talbe correcly", () => {
+    const { asFragment } = render(<CastMemberTable {...Props} />, {
+      wrapper: BrowserRouter,
     });
-})
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it("should render CastMemberTable with loading", () => {
+    const { asFragment } = render(<CastMemberTable {...Props} isFetching />, {
+      wrapper: BrowserRouter,
+    });
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it("should render CastMemberTable with empty data", () => {
+    const { asFragment } = render(
+      <CastMemberTable {...Props} data={{ data: [], meta: {} } as any} />,
+      { wrapper: BrowserRouter }
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it("should render corret type", () => {
+    const { asFragment } = render(
+      <CastMemberTable
+        {...Props}
+        data={{
+          data: [{ ...Props.data.data[0], type: 2 }],
+          links: { ...Props.data.links },
+          meta: { ...Props.data.meta },
+        }}
+      />,
+      {
+        wrapper: BrowserRouter,
+      }
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+});

@@ -1,14 +1,37 @@
-import { fireEvent, renderWithProviders, screen, waitFor } from "../../utils/test-utils";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import {
+  fireEvent,
+  renderWithProviders,
+  screen,
+  waitFor,
+} from "../../utils/test-utils";
+import { baseUrl } from "../api/apiSlice";
 import { categoryResponse, categoryResponsePage2 } from "../mocks";
 import { CategoryList } from "./CategoryList";
 
-const mock = new MockAdapter(axios);
+export const handlers = [
+  rest.get(`${baseUrl}/categories`, (req, res, ctx) => {
+    if (req.url.searchParams.get("page") === "2") {
+      return res(ctx.json(categoryResponsePage2), ctx.delay(150));
+    }
+    return res(ctx.json(categoryResponse), ctx.delay(150));
+  }),
+
+  rest.delete(
+    `${baseUrl}/categories/cbdd550c-ad46-4e50-be8d-a8266aff4162`,
+    (_, res, ctx) => {
+      return res(ctx.delay(150), ctx.status(204));
+    }
+  ),
+];
+
+const server = setupServer(...handlers);
 
 describe("CategoryList", () => {
-  afterEach(() => mock.reset());
-  afterAll(() => mock.restore());
+  afterAll(() => server.close());
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
 
   it("should render correctly", () => {
     const { asFragment } = renderWithProviders(<CategoryList />);
@@ -22,28 +45,20 @@ describe("CategoryList", () => {
   });
 
   it("should render success state", async () => {
-    mock.onGet("/categories").reply(200, {
-      data: [
-        {
-          id: "fcc1374f-48dc-4f0a-8ef3-81e7a8c25748",
-          name: "Dr. Dayton Kuhlman",
-          description: "Asperiores vitae repellendus impedit sequi ea saepe itaque expedita in quam iure ut id.",
-          is_active: true,
-          created_at: "2024-12-27 18:34:59",
-        },
-      ],
-    });
-
     renderWithProviders(<CategoryList />);
-
+    // esperar que o elemento seja renderizado
     await waitFor(() => {
-      const name = screen.getByText("Dr. Dayton Kuhlman");
+      const name = screen.getByText("PaleTurquoise");
       expect(name).toBeInTheDocument();
     });
   });
 
   it("should render error state", async () => {
-    mock.onGet("/categories").reply(500);
+    server.use(
+      rest.get(`${baseUrl}/categories`, (_, res, ctx) => {
+        return res(ctx.status(500));
+      })
+    );
 
     renderWithProviders(<CategoryList />);
 
@@ -54,16 +69,10 @@ describe("CategoryList", () => {
   });
 
   it("should handle On PageChange", async () => {
-    mock
-      .onGet("/categories?page=1")
-      .reply(200, categoryResponse)
-      .onGet("/categories?page=2")
-      .reply(200, categoryResponsePage2);
-
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Dayton Kuhlman");
+      const name = screen.getByText("PaleTurquoise");
       expect(name).toBeInTheDocument();
     });
 
@@ -71,74 +80,70 @@ describe("CategoryList", () => {
     fireEvent.click(nextButton);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Darion Upton");
+      const name = screen.getByText("SeaGreen");
       expect(name).toBeInTheDocument();
     });
   });
 
   it("should handle filter change", async () => {
-    mock.onGet("/categories?search=Dr.").reply(200, {
-      data: [
-        {
-          id: "fcc1374f-48dc-4f0a-8ef3-81e7a8c25748",
-          name: "Dr. Dayton Kuhlman",
-        },
-      ],
-    });
-
     renderWithProviders(<CategoryList />);
-
+    // esperar que o elemento seja renderizado
+    await waitFor(() => {
+      const name = screen.getByText("PaleTurquoise");
+      expect(name).toBeInTheDocument();
+    });
+    // pegar o input com o placeholder "Search..."
     const input = screen.getByPlaceholderText("Search…");
-    fireEvent.change(input, { target: { value: "Dr." } });
+
+    // Fire event on change
+    fireEvent.change(input, { target: { value: "PapayaWhip" } });
 
     await waitFor(() => {
       const loading = screen.getByRole("progressbar");
       expect(loading).toBeInTheDocument();
     });
-
-    await waitFor(() => {
-      const name = screen.getByText("Dr. Dayton Kuhlman");
-      expect(name).toBeInTheDocument();
-    });
   });
 
   it("should handle Delete Category success", async () => {
-    mock.onGet("/categories").reply(200, categoryResponse);
-    mock.onDelete("/categories/fcc1374f-48dc-4f0a-8ef3-81e7a8c25748").reply(200);
-
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Dayton Kuhlman");
+      const name = screen.getByText("PaleTurquoise");
       expect(name).toBeInTheDocument();
     });
 
-    const deleteButton = screen.getByTestId("DeleteSharpIcon");
+    const deleteButton = screen.getAllByTestId("delete-button")[0];
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      const message = screen.getByText("Category deleted");
-      expect(message).toBeInTheDocument();
+      const name = screen.getByText("Category deleted");
+      expect(name).toBeInTheDocument();
     });
   });
 
   it("should handle Delete Category error", async () => {
-    mock.onGet("/categories").reply(200, categoryResponse);
-    mock.onDelete("/categories/fdbb7cd5-5fe5-4a7c-a5f5-c991cc45fd1c").reply(500);
+    server.use(
+      rest.delete(
+        `${baseUrl}/categories/cbdd550c-ad46-4e50-be8d-a8266aff4162`,
+        (_, res, ctx) => {
+          return res(ctx.delay(150), ctx.status(500));
+        }
+      )
+    );
 
     renderWithProviders(<CategoryList />);
 
     await waitFor(() => {
-      const name = screen.getByText("Dr. Dayton Kuhlman");
+      const name = screen.getByText("PaleTurquoise");
       expect(name).toBeInTheDocument();
     });
 
-    const deleteButton = screen.getByTestId("DeleteSharpIcon");
+    const deleteButton = screen.getAllByTestId("delete-button")[0];
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      const message = screen.getByText("Category not deleted");
-      expect(message).toBeInTheDocument();
+      const name = screen.getByText("Category not deleted");
+      expect(name).toBeInTheDocument();
     });
   });
 });

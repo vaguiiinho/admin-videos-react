@@ -9,7 +9,7 @@ import { CastMemberForm } from "./components/CastMemberForm";
 export function UpdateCastMember() {
 
     const id = useParams().id || ""
-    const { data: castMember, isFetching } = useGetCastMemberQuery({ id });
+    const { data: castMember } = useGetCastMemberQuery({ id });
 
 
     const [updateCastMember, status] = useUpdateCastMemberMutation()

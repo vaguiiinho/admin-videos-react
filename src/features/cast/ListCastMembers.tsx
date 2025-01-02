@@ -1,67 +1,61 @@
-import { GridFilterModel, GridPaginationModel } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
-import { useDeleteCastMemberMutation, useGetCastMembersQuery } from './castMemberSlice';
-import { Box, Button, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
-import { CastMemberTable } from './components/CastMemberTable';
+import { Button, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { GridFilterModel } from "@mui/x-data-grid";
+import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useDeleteCastMemberMutation, useGetCastMembersQuery } from "./castMemberSlice";
+import { CastMemberTable } from "./components/CastMemberTable";
 
-export function ListCastMembers() {
+export const ListCastMembers = () => {
+    const { enqueueSnackbar } = useSnackbar();
     const [options, setOptions] = useState({
-        page: 0,
-        totalPage: 10,
-        filter: "",
-        rowsPerPage: [5, 10, 15, 20, 50]
-    })
+        page: 1,
+        search: "",
+        perPage: 10,
+        rowsPerPage: [10, 20, 30],
+    });
     const { data, isFetching, error } = useGetCastMembersQuery(options);
-    const [deleteCastMember, deleteCastMembersStatus] = useDeleteCastMemberMutation()
-
-    const { enqueueSnackbar } = useSnackbar()
+    const [deleteCastMember, deleteCastMemberStatus] =
+        useDeleteCastMemberMutation();
 
     async function handleDeleteCastMember(id: string) {
-        await deleteCastMember({ id })
+        await deleteCastMember({ id });
     }
 
-    function onPaginationModelChange(model: GridPaginationModel) {
-        setOptions({
-            ...options,
-            page: model.page,
-            totalPage: model.pageSize,
-        })
+    function handleOnPageChange(page: number) {
+        setOptions({ ...options, page: page + 1 });
+    }
+
+    function handleOnPageSizeChange(perPage: number) {
+        setOptions({ ...options, perPage });
     }
 
     function handleFilterChange(filterModel: GridFilterModel) {
-        if (filterModel.quickFilterValues?.length === 1) {
-            const quickFilterValue = filterModel.quickFilterValues.join(" ")
-            return setOptions({
-                ...options,
-                filter: quickFilterValue,
-            })
+        if (filterModel.quickFilterValues?.length) {
+            const search = filterModel.quickFilterValues.join("");
+            return setOptions({ ...options, search });
         }
 
-        return setOptions({
-            ...options,
-            filter: "",
-        })
+        return setOptions({ ...options, search: "" });
     }
 
     useEffect(() => {
-
-        if (deleteCastMembersStatus.isSuccess) {
-            enqueueSnackbar(`Cast member deleted, {variant: success}`)
+        if (deleteCastMemberStatus.isSuccess) {
+            enqueueSnackbar(`Cast member deleted`, { variant: "success" });
         }
-        if (deleteCastMembersStatus.error) {
-            enqueueSnackbar(`Cast member not deleted, {variant: error}`)
+        if (deleteCastMemberStatus.isError) {
+            enqueueSnackbar(`Cast member not deleted`, { variant: "error" });
         }
-    }, [deleteCastMembersStatus, enqueueSnackbar]);
+    }, [deleteCastMemberStatus, enqueueSnackbar]);
 
     if (error) {
-        return <Typography>Error fetching categories</Typography>
+        return <Typography variant="h2">Error!</Typography>;
     }
 
     return (
-        <Box maxWidth="lg" sx={{ my: 4 }}>
-            <Box display="flex" justifyContent="end">
+        <Box maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Box display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"
                     color="secondary"
@@ -74,13 +68,14 @@ export function ListCastMembers() {
             </Box>
             <CastMemberTable
                 data={data}
+                perPage={options.perPage}
                 isFetching={isFetching}
-                pageSizeOptions={options.rowsPerPage}
-                paginationModel={{ page: options.page, pageSize: options.totalPage }}
+                rowsPerPage={options.rowsPerPage}
                 handleDelete={handleDeleteCastMember}
+                handleOnPageChange={handleOnPageChange}
+                handleOnPageSizeChange={handleOnPageSizeChange}
                 handleFilterChange={handleFilterChange}
-                onPaginationModelChange={onPaginationModelChange}
             />
         </Box>
-    )
-}
+    );
+};

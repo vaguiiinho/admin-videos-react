@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Category } from "../../types/category";
+import { Category } from "../../types/Category";
 import { useGetCategoryQuery, useUpdateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 export function CategoryUpdate() {
@@ -19,6 +19,8 @@ export function CategoryUpdate() {
         created_at: "",
         description: "",
         is_active: false,
+        updated_at: "",
+        deleted_at: "",
     };
     const [categoryState, setCategoryState] = useState<Category>(initialState)
 
@@ -46,6 +48,8 @@ export function CategoryUpdate() {
                 is_active: category.data.is_active,
                 created_at: category.data.created_at,
                 description: category.data.description,
+                updated_at: category.data.updated_at,
+                deleted_at: category.data.deleted_at,
             });
         }
     }, [category, isFetching]);

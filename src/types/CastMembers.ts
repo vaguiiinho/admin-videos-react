@@ -1,34 +1,44 @@
 export interface Results {
     data: CastMember[];
+    links: Links;
     meta: Meta;
-}
-
-export interface Result {
+  }
+  
+  export interface Result {
     data: CastMember;
+    links: Links;
     meta: Meta;
-}
-
-export interface CastMember {
+  }
+  
+  export interface CastMember {
     id: string;
     name: string;
     type: number;
-    createdAt: string;
-}
-
-export interface Meta {
-    total: number;
-    current_page: number;
-    first_page: number;
-    last_page: number;
-    per_page: number;
+    deleted_at: string;
+    created_at: string;
+    updated_at: string;
+  }
+  
+  export interface Links {
+    prev: string;
+    last: string;
+    next: string;
+    first: string;
+  }
+  
+  export interface Meta {
     to: number;
     from: number;
-}
-
-
-export interface CastMemberParams {
+    path: string;
+    total: number;
+    perPage: number;
+    lastPage: number;
+    currentPage: number;
+  }
+  
+  export interface CastMemberParams {
     page?: number;
-    totalPage?: number;
-    filter?: string;
+    perPage?: number;
+    search?: string;
     type?: number;
-}
+  }

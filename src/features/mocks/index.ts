@@ -1,47 +1,66 @@
 export const categoryResponse = {
   data: [
     {
-      "id": "fe8268c3-f11c-4886-bc97-e9e7a8b99ae1",
-      "name": "Jackeline Mills PhD",
-      "description": "Autem provident veniam voluptatibus hic atque ut consequatur nam iure a maiores qui.",
-      "is_active": true,
-      "created_at": "2024-12-27 18:35:00"
-    }, {
-      "id": "fdbb7cd5-5fe5-4a7c-a5f5-c991cc45fd1c",
-      "name": "Dr. Dayton Kuhlman",
-      "description": "Expedita maxime est eaque ipsa dolor consequatur est voluptatem consectetur quaerat ut beatae blanditiis.",
-      "is_active": true,
-      "created_at": "2024-12-27 18:35:00"
+      id: "cbdd550c-ad46-4e50-be8d-a8266aff4162",
+      name: "PaleTurquoise",
+      description: "Explicabo nemo voluptate aut nostrum impedit minus.",
+      is_active: true,
+      deleted_at: null,
+      created_at: "2022-09-27T17:10:33+0000",
+      updated_at: "2022-09-27T17:10:33+0000",
+    },
+    {
+      id: "c9f5b9b9-9b9a-4b9a-8b9a-9b9a9b9a9b9a",
+      name: "PapayaWhip",
+      description: "Quia voluptatem voluptatem.",
+      is_active: true,
+      deleted_at: null,
+      created_at: "2022-09-27T17:10:33+0000",
+      updated_at: "2022-09-27T17:10:33+0000",
     },
   ],
-  "meta": {
-    "total": 110,
-    "current_page": 1,
-    "first_page": 1,
-    "last_page": 8,
-    "per_page": 15,
-    "to": 1,
-    "from": 15
-  }
+  links: {
+    first: "http://localhost:8000/api/categories?page=1",
+    last: "http://localhost:8000/api/categories?page=7",
+    prev: null,
+    next: "http://localhost:8000/api/categories?page=2",
+  },
+  meta: {
+    current_page: 1,
+    from: 1,
+    last_page: 7,
+    path: "http://localhost:8000/api/categories",
+    per_page: 15,
+    to: 15,
+    total: 95,
+  },
 };
 
 export const categoryResponsePage2 = {
   data: [
     {
-      "id": "e461e21f-1db6-42d7-b3f4-19c221630903",
-      "name": "Dr. Darion Upton",
-      "description": "Rerum eos labore rerum modi nihil blanditiis qui magnam laudantium necessitatibus ea.",
-      "is_active": true,
-      "created_at": "2024-12-27 18:34:59"
+      id: "cbdd550c-ad46-4e50-be8d-a8266aff4163",
+      name: "SeaGreen",
+      description: "Explicabo nemo voluptate aut nostrum impedit minus.",
+      is_active: true,
+      deleted_at: null,
+      created_at: "2022-09-27T17:10:33+0000",
+      updated_at: "2022-09-27T17:10:33+0000",
     },
   ],
-  "meta": {
-    "total": 110,
-    "current_page": 2,
-    "first_page": 16,
-    "last_page": 8,
-    "per_page": 15,
-    "to": 16,
-    "from": 30
-  }
+  links: {
+    first: "http://localhost:8000/api/categories?page=1",
+    last: "http://localhost:8000/api/categories?page=7",
+    prev: "http://localhost:8000/api/categories?page=1",
+    next: "http://localhost:8000/api/categories?page=3",
+  },
+  meta: {
+    current_page: 2,
+    from: 1,
+    last_page: 7,
+    path: "http://localhost:8000/api/categories",
+    per_page: 15,
+    to: 15,
+    total: 95,
+  },
 };

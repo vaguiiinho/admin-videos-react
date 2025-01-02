@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { Category } from "../../types/category";
+import { Category } from "../../types/Category";
 import { useCreateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 
@@ -19,6 +19,8 @@ export function CategoryCreate() {
         description: "",
         is_active: false,
         created_at: "",
+        updated_at: "",
+        deleted_at: "",
     })
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
